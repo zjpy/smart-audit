@@ -3,7 +3,7 @@ package rules
 type RuleType int16
 
 const (
-	Node RuleType = iota
+	None RuleType = iota
 	Time
 	Location
 	FaceRecognize

@@ -3,6 +3,7 @@ package invokes
 import (
 	"audit/project"
 	"audit/record"
+	"audit/rules"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
@@ -13,6 +14,10 @@ func AddEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Response
 	registration, err := project.RegistrationFromString(args, stub)
 	if err != nil {
 		return shim.Error(fmt.Sprint("合规事件登录失败，详细信息：", err))
+	}
+
+	if err = verify(registration, stub); err != nil {
+		return shim.Error(fmt.Sprint("合规事件数据验证失败，详细信息：", err))
 	}
 
 	if err = record.Store(registration, stub); err != nil {
@@ -26,4 +31,16 @@ func AddEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Response
 			registration.Key(), err))
 	}
 	return shim.Success(nil)
+}
+
+func verify(registration *project.Registration, stub shim.ChaincodeStubInterface) error {
+	if err := registration.Validate(stub); err != nil {
+		return fmt.Errorf("合规事件%s数据验证失败，详细信息：%s", registration.ID, err)
+	}
+
+	if err := rules.ValidateRules(registration.Rule.Expression, stub); err != nil {
+		return fmt.Errorf("合规事件%s规则验证失败，详细信息：%s", registration.ID, err)
+	}
+
+	return nil
 }

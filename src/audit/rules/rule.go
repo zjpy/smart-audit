@@ -1,6 +1,9 @@
 package rules
 
-import "strconv"
+import (
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"strconv"
+)
 
 // 用于定义一种规则模式的结构
 type Rule struct {
@@ -12,6 +15,11 @@ type Rule struct {
 
 	// 具体规则定义
 	Expression string
+}
+
+func (r *Rule) Validate(stub shim.ChaincodeStubInterface) error {
+	// todo complete me
+	return nil
 }
 
 func (r *Rule) Key() string {

@@ -1,6 +1,7 @@
 package orgnization
 
 import (
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
 )
 
@@ -14,6 +15,11 @@ type Member struct {
 
 	// 成员公钥
 	PK []byte
+}
+
+func (m *Member) Validate(stub shim.ChaincodeStubInterface) error {
+	// todo complete me
+	return nil
 }
 
 func (m *Member) Key() string {

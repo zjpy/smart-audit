@@ -1,6 +1,9 @@
 package project
 
-import "strconv"
+import (
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"strconv"
+)
 
 // 用于定义一个审计业务的结构
 type Project struct {
@@ -12,6 +15,11 @@ type Project struct {
 
 	// 业务相关描述
 	Description string
+}
+
+func (p *Project) Validate(stub shim.ChaincodeStubInterface) error {
+	// todo complete me
+	return nil
 }
 
 func (p *Project) Key() string {

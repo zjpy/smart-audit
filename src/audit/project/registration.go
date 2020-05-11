@@ -26,6 +26,11 @@ type Registration struct {
 	Index uint32
 }
 
+func (r *Registration) Validate(stub shim.ChaincodeStubInterface) error {
+	// todo complete me
+	return nil
+}
+
 func (r *Registration) Key() string {
 	return string(r.ID) + strconv.FormatUint(uint64(r.Index), 10)
 }
