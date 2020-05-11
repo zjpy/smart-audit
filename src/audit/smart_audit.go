@@ -23,6 +23,8 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		return invokes.RegisterRuleMain(args, stub)
 	case invokes.RegisterAuditee:
 		return invokes.RegisterAuditeeMain(args, stub)
+	case invokes.RegisterProject:
+		return invokes.RegisterProjectMain(args, stub)
 	case invokes.AddEvent:
 		return invokes.AddEventMain(args, stub)
 	default:

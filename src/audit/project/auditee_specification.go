@@ -22,3 +22,12 @@ type AuditeeSpecification struct {
 	// 审计当事人需要遵守的规则
 	Rule rules.Rule
 }
+
+func (a *AuditeeSpecification) Key() string {
+	return string(a.ID)
+}
+
+func (a *AuditeeSpecification) Value() []byte {
+	// todo 这里不需要序列化所有的值，只是将Auditee, Project, Rule的Key值序列化即可
+	return nil
+}
