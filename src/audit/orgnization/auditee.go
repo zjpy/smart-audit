@@ -4,3 +4,8 @@ package orgnization
 type Auditee struct {
 	Member
 }
+
+func AuditeeFromString(args []string) (*Auditee, error) {
+	// todo compete me
+	return nil, nil
+}
