@@ -8,7 +8,7 @@ type Item interface {
 	Key() string
 
 	// 序列化存储除Key值外的所有数据
-	Value() []byte
+	Value() ([]byte, error)
 
 	// 合法性检查，主要为数据本身的合法性相关
 	Validate(stub shim.ChaincodeStubInterface) error

@@ -1,8 +1,12 @@
 package project
 
 import (
-	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"audit/common"
+	"bytes"
+	"errors"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // 用于定义一个审计业务的结构
@@ -26,9 +30,15 @@ func (p *Project) Key() string {
 	return strconv.FormatUint(uint64(p.ID), 10)
 }
 
-func (p *Project) Value() []byte {
-	// todo complete me
-	return nil
+func (p *Project) Value() ([]byte, error) {
+	w := new(bytes.Buffer)
+	if err := common.WriteVarString(w, p.Name); err != nil {
+		return nil, errors.New("failed to serialize project name")
+	}
+	if err := common.WriteVarString(w, p.Description); err != nil {
+		return nil, errors.New("failed to serialize project description")
+	}
+	return w.Bytes(), nil
 }
 
 func FromStrings(args []string) (*Project, error) {

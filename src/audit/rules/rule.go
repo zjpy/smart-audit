@@ -1,8 +1,12 @@
 package rules
 
 import (
-	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"audit/common"
+	"bytes"
+	"errors"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // 用于定义一种规则模式的结构
@@ -26,9 +30,15 @@ func (r *Rule) Key() string {
 	return strconv.FormatUint(uint64(r.ID), 10)
 }
 
-func (r *Rule) Value() []byte {
-	// todo 除ID之外的序列化工作
-	return nil
+func (r *Rule) Value() ([]byte, error) {
+	w := new(bytes.Buffer)
+	if err := common.WriteVarString(w, r.Name); err != nil {
+		return nil, errors.New("failed to serialize rule name")
+	}
+	if err := common.WriteVarString(w, r.Expression); err != nil {
+		return nil, errors.New("failed to serialize member expression")
+	}
+	return w.Bytes(), nil
 }
 
 func FromStrings(args []string) (*Rule, error) {

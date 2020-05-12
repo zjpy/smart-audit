@@ -1,8 +1,12 @@
 package project
 
 import (
+	"audit/common"
 	"audit/orgnization"
 	"audit/rules"
+	"bytes"
+	"errors"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -33,7 +37,17 @@ func (a *AuditeeSpecification) Key() string {
 	return string(a.ID)
 }
 
-func (a *AuditeeSpecification) Value() []byte {
-	// todo 这里不需要序列化所有的值，只是将Auditee, Project, Rule的Key值序列化即可
-	return nil
+func (a *AuditeeSpecification) Value() ([]byte, error) {
+	// 这里不需要序列化所有的值，只是将Auditee, Project, Rule的Key值序列化即可
+	w := new(bytes.Buffer)
+	if err := common.WriteVarString(w, a.Auditee.Key()); err != nil {
+		return nil, errors.New("failed to serialize key of Auditee")
+	}
+	if err := common.WriteVarString(w, a.Project.Key()); err != nil {
+		return nil, errors.New("failed to serialize key of Project")
+	}
+	if err := common.WriteVarString(w, a.Rule.Key()); err != nil {
+		return nil, errors.New("failed to serialize key of Auditee")
+	}
+	return w.Bytes(), nil
 }

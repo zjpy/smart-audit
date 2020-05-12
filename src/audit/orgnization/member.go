@@ -1,8 +1,12 @@
 package orgnization
 
 import (
-	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"audit/common"
+	"bytes"
+	"errors"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // 一个组织中成员的基本结构
@@ -26,7 +30,13 @@ func (m *Member) Key() string {
 	return strconv.FormatUint(uint64(m.ID), 10)
 }
 
-func (m *Member) Value() []byte {
-	// todo 除Key之外的信息序列化
-	return nil
+func (m *Member) Value() ([]byte, error) {
+	w := new(bytes.Buffer)
+	if err := common.WriteVarString(w, m.Name); err != nil {
+		return nil, errors.New("failed to serialize member name")
+	}
+	if err := common.WriteVarBytes(w, m.PK); err != nil {
+		return nil, errors.New("failed to serialize member PK")
+	}
+	return w.Bytes(), nil
 }

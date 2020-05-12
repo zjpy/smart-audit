@@ -1,8 +1,12 @@
 package project
 
 import (
-	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"audit/common"
+	"bytes"
+	"errors"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 const (
@@ -35,9 +39,31 @@ func (r *Registration) Key() string {
 	return string(r.ID) + strconv.FormatUint(uint64(r.Index), 10)
 }
 
-func (r *Registration) Value() []byte {
-	// todo complete me
-	return nil
+func (r *Registration) Value() ([]byte, error) {
+	w := new(bytes.Buffer)
+	auditeeValue, err := r.AuditeeSpecification.Value()
+	if err != nil {
+		return nil, err
+	}
+	// 此处只序列化Value就行？（多序列化了一个字节）
+	if err := common.WriteVarBytes(w, auditeeValue); err != nil {
+		return nil, errors.New("failed to serialize registration auditee value")
+	}
+	if err := common.WriteUint32(w, r.Timestamp); err != nil {
+		return nil, errors.New("failed to serialize registration timestamp")
+	}
+	if err := common.WriteVarUint(w, uint64(len(r.Params))); err != nil {
+		return nil, errors.New("failed to serialize length of registration params")
+	}
+	for k, v := range r.Params {
+		if err := common.WriteVarString(w, k); err != nil {
+			return nil, errors.New("failed to serialize params")
+		}
+		if err := common.WriteVarString(w, v); err != nil {
+			return nil, errors.New("failed to serialize params")
+		}
+	}
+	return w.Bytes(), nil
 }
 
 func RegistrationFromString(args []string, stub shim.ChaincodeStubInterface) (*Registration, error) {
