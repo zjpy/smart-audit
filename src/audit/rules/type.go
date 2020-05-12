@@ -8,5 +8,19 @@ const (
 	Location
 	FaceRecognize
 	ObjectRecognize
-	Custom
 )
+
+func (t RuleType) ContractName() string {
+	switch t {
+	case Time:
+		return "Time"
+	case Location:
+		return "Location"
+	case FaceRecognize:
+		return "FaceRecognize"
+	case ObjectRecognize:
+		return "ObjectRecognize"
+	default:
+		return "Unknown"
+	}
+}

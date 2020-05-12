@@ -1,15 +1,18 @@
-package rules
+package contract
 
 type LogicOperator string
 type ConditionalOperator string
 
 // 逻辑关系表达相关操作符
 const (
+	// 空规则，仅用于单个时
+	None LogicOperator = ""
+
 	// 并且
 	AND LogicOperator = "&&"
 
 	// 或
-	OR  LogicOperator = "||"
+	OR LogicOperator = "||"
 
 	// 非
 	NOT LogicOperator = "!"
