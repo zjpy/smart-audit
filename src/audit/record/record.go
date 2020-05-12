@@ -16,5 +16,9 @@ type Item interface {
 
 // 与智能合约记录相关的操作定义
 func Store(item Item, stub shim.ChaincodeStubInterface) error {
-	return stub.PutState(item.Key(), item.Value())
+	value, err := item.Value()
+	if err != nil {
+		return err
+	}
+	return stub.PutState(item.Key(), value)
 }
