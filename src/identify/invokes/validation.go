@@ -4,6 +4,7 @@ import (
 	"audit/contract"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	_ "identify/service"
 	"identify/service/dummy"
 	"strconv"
 )
