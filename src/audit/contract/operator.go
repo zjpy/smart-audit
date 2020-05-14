@@ -6,7 +6,7 @@ type ConditionalOperator string
 // 逻辑关系表达相关操作符
 const (
 	// 空规则，仅用于单个时
-	None LogicOperator = ""
+	NONE LogicOperator = ""
 
 	// 并且
 	AND LogicOperator = "&&"
