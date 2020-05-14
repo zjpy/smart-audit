@@ -7,11 +7,11 @@ import (
 )
 
 func TestFaceValidation_Validate(t *testing.T) {
-	validation := FaceValidation{}
+	validation := EntityIdentifyValidation{}
 
 	success := 0
 	fail := 0
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 20; i++ {
 		if err := validation.Validate(0, []string{base64Img(),
 			"xxxx"}); err != nil {
 			fail++

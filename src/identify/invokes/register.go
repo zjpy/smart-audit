@@ -2,9 +2,9 @@ package invokes
 
 import (
 	"audit/contract"
-	"face/service/dummy"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	"identify/service/dummy"
 	"strconv"
 )
 
@@ -32,7 +32,7 @@ func RegisterMain(args []string, stub shim.ChaincodeStubInterface) peer.Response
 }
 
 func initRegistration() contract.Registration {
-	// fixme 在真实商用环境下替换为完成好的service.FaceRegistration
-	//return &service.FaceRegistration{}
-	return &dummy.FaceRegistration{}
+	// fixme 在真实商用环境下替换为完成好的service.EntityIdentifyRegistration
+	//return &service.EntityIdentifyRegistration{}
+	return &dummy.EntityIdentifyRegistration{}
 }

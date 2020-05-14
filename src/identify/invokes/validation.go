@@ -2,9 +2,9 @@ package invokes
 
 import (
 	"audit/contract"
-	"face/service/dummy"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	"identify/service/dummy"
 	"strconv"
 )
 
@@ -27,7 +27,7 @@ func ValidateTimeMain(args []string) peer.Response {
 }
 
 func initValidation() contract.Validation {
-	// fixme 在真实商用环境下替换为完成好的service.FaceValidation
-	//return &service.FaceValidation{}
-	return &dummy.FaceValidation{}
+	// fixme 在真实商用环境下替换为完成好的service.EntityIdentifyValidation
+	//return &service.EntityIdentifyValidation{}
+	return &dummy.EntityIdentifyValidation{}
 }
