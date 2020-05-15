@@ -1,24 +1,34 @@
 package record
 
-import "github.com/hyperledger/fabric/core/chaincode/shim"
+import (
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"strconv"
+)
 
-// 用于抽象一条记录的信息
-type Item interface {
-	// Key值
-	Key() string
+// 用于抽象记录的存储操作
+type Record interface {
+	CountKey() string
 
-	// 序列化存储除Key值外的所有数据
-	Value() ([]byte, error)
-
-	// 合法性检查，主要为数据本身的合法性相关
-	Validate(stub shim.ChaincodeStubInterface) error
+	// 获取记录数量
+	GetCount() uint32
 }
 
-// 与智能合约记录相关的操作定义
-func Store(item Item, stub shim.ChaincodeStubInterface) error {
-	value, err := item.Value()
+func StoreCount(record Record, stub shim.ChaincodeStubInterface) error {
+	return stub.PutState(record.CountKey(), []byte(strconv.FormatUint(uint64(
+		record.GetCount()), 10)))
+}
+
+func GetRecordCount(key string, stub shim.ChaincodeStubInterface) (uint32, error) {
+	countBuf, err := stub.GetState(key)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return stub.PutState(item.Key(), value)
+
+	// 未找到则从0开始
+	if countBuf == nil {
+		return 0, nil
+	}
+
+	count, err := strconv.ParseUint(string(countBuf), 10, 32)
+	return uint32(count), err
 }

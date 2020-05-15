@@ -6,8 +6,6 @@ import (
 	"audit/rules"
 	"bytes"
 	"errors"
-
-	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // todo 在fabric中找到对应的类型
@@ -28,7 +26,7 @@ type AuditeeSpecification struct {
 	Rule rules.Rule
 }
 
-func (a *AuditeeSpecification) Validate(stub shim.ChaincodeStubInterface) error {
+func (a *AuditeeSpecification) Validate() error {
 	// todo complete me
 	return nil
 }

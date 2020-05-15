@@ -2,6 +2,7 @@ package project
 
 import (
 	"audit/common"
+	"audit/record"
 	"bytes"
 	"errors"
 	"strconv"
@@ -28,9 +29,19 @@ type Registration struct {
 
 	// 用于标记隶属于一个业务下该审计当事人第几次登录
 	Index uint32
+
+	stub shim.ChaincodeStubInterface
 }
 
-func (r *Registration) Validate(stub shim.ChaincodeStubInterface) error {
+func (r *Registration) CountKey() string {
+	return string(r.ID) + countKeySuffix
+}
+
+func (r *Registration) GetCount() uint32 {
+	return r.Index + 1
+}
+
+func (r *Registration) Validate() error {
 	// todo complete me
 	return nil
 }
@@ -66,11 +77,12 @@ func (r *Registration) Value() ([]byte, error) {
 	return w.Bytes(), nil
 }
 
-func RegistrationFromString(args []string, stub shim.ChaincodeStubInterface) (*Registration, error) {
+func RegistrationFromString(args []string,
+	stub shim.ChaincodeStubInterface) (*Registration, error) {
 	// todo 通过参数解析
 	registration := &Registration{}
 
-	index, err := getRegistrationCount(registration.ID, stub)
+	index, err := record.GetRecordCount(getRegistrationCountKey(registration.ID), stub)
 	if err != nil {
 		return nil, err
 	}
@@ -79,22 +91,6 @@ func RegistrationFromString(args []string, stub shim.ChaincodeStubInterface) (*R
 	return registration, nil
 }
 
-func GetRegistrationCountKey(specID Uint256) string {
+func getRegistrationCountKey(specID Uint256) string {
 	return string(specID) + countKeySuffix
-}
-
-func getRegistrationCount(specID Uint256, stub shim.ChaincodeStubInterface) (
-	uint32, error) {
-	countBuf, err := stub.GetState(GetRegistrationCountKey(specID))
-	if err != nil {
-		return 0, err
-	}
-
-	// 未找到则从0开始
-	if countBuf == nil {
-		return 0, nil
-	}
-
-	count, err := strconv.ParseUint(string(countBuf), 10, 32)
-	return uint32(count), err
 }
