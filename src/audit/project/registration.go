@@ -22,12 +22,12 @@ type Registration struct {
 	AuditeeSpecification
 
 	// 登录发生的时间
-	Timestamp uint32
+	Timestamp uint64
 
 	// 登录涉及的参数
-	Params map[string]string
+	Params []string
 
-	// 用于标记隶属于一个业务下该审计当事人第几次登录
+	// 用于标记隶属于一个业务下该审计当事人第几次录入
 	Index uint32
 
 	stub shim.ChaincodeStubInterface
@@ -60,16 +60,13 @@ func (r *Registration) Value() ([]byte, error) {
 	if err := common.WriteVarBytes(w, auditeeValue); err != nil {
 		return nil, errors.New("failed to serialize registration auditee value")
 	}
-	if err := common.WriteUint32(w, r.Timestamp); err != nil {
+	if err := common.WriteUint64(w, r.Timestamp); err != nil {
 		return nil, errors.New("failed to serialize registration timestamp")
 	}
 	if err := common.WriteVarUint(w, uint64(len(r.Params))); err != nil {
 		return nil, errors.New("failed to serialize length of registration params")
 	}
-	for k, v := range r.Params {
-		if err := common.WriteVarString(w, k); err != nil {
-			return nil, errors.New("failed to serialize params")
-		}
+	for _, v := range r.Params {
 		if err := common.WriteVarString(w, v); err != nil {
 			return nil, errors.New("failed to serialize params")
 		}

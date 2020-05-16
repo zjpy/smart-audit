@@ -36,7 +36,7 @@ func verify(registration *project.Registration, stub shim.ChaincodeStubInterface
 		return fmt.Errorf("合规事件%s数据验证失败，详细信息：%s", registration.ID, err)
 	}
 
-	if err := rules.ValidateRules(registration.Rule.Expression, stub); err != nil {
+	if err := rules.ValidateRules(registration.Params, stub); err != nil {
 		return fmt.Errorf("合规事件%s规则验证失败，详细信息：%s", registration.ID, err)
 	}
 

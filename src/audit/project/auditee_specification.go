@@ -23,7 +23,7 @@ type AuditeeSpecification struct {
 	Project Project
 
 	// 审计当事人需要遵守的规则
-	Rule rules.Rule
+	Rule rules.ValidationRelationship
 }
 
 func (a *AuditeeSpecification) Validate() error {

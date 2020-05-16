@@ -5,17 +5,17 @@ type ConditionalOperator string
 
 // 逻辑关系表达相关操作符
 const (
-	// 空规则，仅用于单个时
-	NONE LogicOperator = ""
+	// 空规则
+	NONE LogicOperator = "~"
+
+	// 非, 目前仅支持单个规则的情况
+	NOT LogicOperator = "!"
 
 	// 并且
 	AND LogicOperator = "&&"
 
 	// 或
 	OR LogicOperator = "||"
-
-	// 非
-	NOT LogicOperator = "!"
 )
 
 // 条件表达式相关操作符

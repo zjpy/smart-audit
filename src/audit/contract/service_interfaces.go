@@ -2,6 +2,7 @@ package contract
 
 const (
 	ValidationFunctionName = "validation"
+	RegisterFunctionName = "register"
 )
 
 // 用于定义服务中的规则ID

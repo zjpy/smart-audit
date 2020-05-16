@@ -7,6 +7,7 @@ const (
 	AddEvent = "add-event"
 	// todo 完成所有的查询方法
 	GetRule = "get-rule"
+	GetMaintainers = "get-maintainers"
 	GetAuditee = "get-auditee"
 	GetProject = "get-project"
 	QueryEvents = "query-events"
