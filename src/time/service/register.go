@@ -1,21 +1,23 @@
 package service
 
-import "audit/contract"
+import (
+	"audit/contract"
+	"errors"
+)
 
 type TimeRegistration struct {
 }
 
-func (t *TimeRegistration) Register(id contract.ServiceRuleID, args []string) error {
-	rules, err := contract.ServiceRulesFromArgs(args)
-	if err != nil {
-		return err
+func (t *TimeRegistration) Register(args []string) (contract.ServiceRuleID, error) {
+	if len(args) < 1 {
+		return 0, errors.New("注册规则所需参数不足")
 	}
 
-	return t.serviceRegister(id, rules)
+	return t.serviceRegister(args[0])
 }
 
-func (t *TimeRegistration) serviceRegister(id contract.ServiceRuleID,
-	rules *contract.ServiceRules) error {
+func (t *TimeRegistration) serviceRegister(
+	expression string) (contract.ServiceRuleID, error) {
 	// fixme 实际商用时实现时间预言机，然后在这里调用预言机服务
-	return nil
+	return 0, nil
 }

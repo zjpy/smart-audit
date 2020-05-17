@@ -6,16 +6,16 @@ type ConditionalOperator string
 // 逻辑关系表达相关操作符
 const (
 	// 空规则
-	NONE LogicOperator = "~"
+	NONE LogicOperator = "NONE"
 
 	// 非, 目前仅支持单个规则的情况
-	NOT LogicOperator = "!"
+	NOT LogicOperator = "NOT"
 
 	// 并且
-	AND LogicOperator = "&&"
+	AND LogicOperator = "AND"
 
 	// 或
-	OR LogicOperator = "||"
+	OR LogicOperator = "OR"
 )
 
 // 条件表达式相关操作符

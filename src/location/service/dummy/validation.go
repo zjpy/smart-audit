@@ -16,6 +16,18 @@ var (
 	fixServiceValidationRule = initValidationRule()
 )
 
+// 这里模拟在预言机服务上的单个规则结构
+type RuleItem struct {
+	Logic     contract.LogicOperator
+	Condition contract.ConditionalOperator
+	Params    []string
+}
+
+// 这里模拟通过规则表达式解析出的一组规则结构
+type ServiceRules struct {
+	Rules []RuleItem
+}
+
 type LocationValidation struct {
 }
 
@@ -57,9 +69,9 @@ func (t *LocationValidation) toRadians(degrees float64) float64 {
 }
 
 // 这里粗略初始化了一个北京的1千米以内的验证规则
-func initValidationRule() *contract.ServiceRules {
-	return &contract.ServiceRules{
-		Rules: []contract.RuleItem{
+func initValidationRule() *ServiceRules {
+	return &ServiceRules{
+		Rules: []RuleItem{
 			{
 				Logic:     contract.NONE,
 				Condition: contract.IN,

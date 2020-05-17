@@ -17,7 +17,8 @@ type ValidationRelationship struct {
 	// 逻辑操作符
 	Operator contract.LogicOperator
 
-	Rules map[uint32]RuleType
+	// 用于记录一组规则，Key值对应一个规则类型，Value值为注册规则表达式时预言机服务返回的相应的ID值
+	Rules map[RuleType]contract.ServiceRuleID
 
 	// 规则唯一标识
 	ID uint32
@@ -28,7 +29,7 @@ func (v *ValidationRelationship) CountKey() string {
 }
 
 func (v *ValidationRelationship) GetCount() uint32 {
-	return v.ID + 1
+	return uint32(v.ID) + 1
 }
 
 func (v *ValidationRelationship) Key() string {

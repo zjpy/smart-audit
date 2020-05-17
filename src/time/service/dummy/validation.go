@@ -15,6 +15,18 @@ var (
 	fixServiceValidationRule = initValidationRule()
 )
 
+// 这里模拟在预言机服务上的单个规则结构
+type RuleItem struct {
+	Logic     contract.LogicOperator
+	Condition contract.ConditionalOperator
+	Params    []string
+}
+
+// 这里模拟通过规则表达式解析出的一组规则结构
+type ServiceRules struct {
+	Rules []RuleItem
+}
+
 type TimeValidation struct {
 }
 
@@ -49,9 +61,9 @@ func (t *TimeValidation) getTimeFromRuleParams(params []string) time.Time {
 }
 
 // 这里初始化了一个"朝九晚六"的验证规则
-func initValidationRule() *contract.ServiceRules {
-	return &contract.ServiceRules{
-		Rules: []contract.RuleItem{
+func initValidationRule() *ServiceRules {
+	return &ServiceRules{
+		Rules: []RuleItem{
 			{
 				Logic:     contract.AND,
 				Condition: contract.GE,

@@ -7,10 +7,9 @@ import (
 	"audit/rules"
 	"bytes"
 	"fmt"
-	"strconv"
-
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	"strconv"
 )
 
 func AddEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Response {
@@ -40,7 +39,8 @@ func verify(registration *project.Registration, stub shim.ChaincodeStubInterface
 		return fmt.Errorf("合规事件%s数据验证失败，详细信息：%s", registration.ID, err)
 	}
 
-	if err := rules.ValidateRules(registration.Params, stub); err != nil {
+	if err := rules.ValidateRules(registration.Rule.ID, registration.Params,
+		stub); err != nil {
 		return fmt.Errorf("合规事件%s规则验证失败，详细信息：%s", registration.ID, err)
 	}
 

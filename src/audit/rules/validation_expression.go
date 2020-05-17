@@ -32,13 +32,14 @@ func RegisterRules(expression []string, stub shim.ChaincodeStubInterface) (uint3
 			return 0, err
 		}
 
-		relation.Rules[ruleID] = v.Type
+		relation.Rules[v.Type] = ruleID
 	}
 
 	return registerValidationRelationship(relation, stub)
 }
 
-func (r *ValidationExpression) registerRule(stub shim.ChaincodeStubInterface) (uint32, error) {
+func (r *ValidationExpression) registerRule(
+	stub shim.ChaincodeStubInterface) (contract.ServiceRuleID, error) {
 	switch r.Type {
 	case Time, Location, FaceRecognize, ObjectRecognize:
 		return r.registerFromContract(r.Type.ContractName(), stub)
@@ -48,7 +49,7 @@ func (r *ValidationExpression) registerRule(stub shim.ChaincodeStubInterface) (u
 }
 
 func (r *ValidationExpression) registerFromContract(contractName string,
-	stub shim.ChaincodeStubInterface) (uint32, error) {
+	stub shim.ChaincodeStubInterface) (contract.ServiceRuleID, error) {
 	args := [][]byte{
 		[]byte(contract.RegisterFunctionName),
 		[]byte(r.Expression),
@@ -62,5 +63,10 @@ func (r *ValidationExpression) registerFromContract(contractName string,
 
 	buf := bytes.Buffer{}
 	buf.Write(rtn.Payload)
-	return common.ReadUint32(&buf)
+	id, err := common.ReadUint32(&buf)
+	if err != nil {
+		return 0, err
+	}
+
+	return contract.ServiceRuleID(id), nil
 }

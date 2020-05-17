@@ -13,5 +13,5 @@ type Validation interface {
 }
 
 type Registration interface {
-	Register(id ServiceRuleID, args []string) error
+	Register(args []string) (ServiceRuleID, error)
 }
