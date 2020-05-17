@@ -6,7 +6,8 @@ import (
 
 const (
 	maintainerPrefix   = "maintainer-"
-	maintainerCountKey = "maintainer-count"
+
+	MaintainerCountKey = "maintainer-count"
 )
 
 // 合约运维人员
@@ -19,7 +20,7 @@ func (m *Maintainer) Key() string {
 }
 
 func (m *Maintainer) CountKey() string {
-	return maintainerCountKey
+	return MaintainerCountKey
 }
 
 func (m *Maintainer) GetCount() uint32 {

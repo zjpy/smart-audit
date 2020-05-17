@@ -5,9 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/binary"
 	"encoding/hex"
-	"math"
-	"runtime"
-	"strings"
 )
 
 var EmptyBytes = make([]byte, 0)
@@ -56,36 +53,11 @@ func Hash(data []byte) Uint256 {
 	return Uint256(Sha256D(data))
 }
 
-// Goid returns the current goroutine id.
-func Goid() string {
-	var buf [18]byte
-	n := runtime.Stack(buf[:], false)
-	fields := strings.Fields(string(buf[:n]))
-	if len(fields) <= 1 {
-		return ""
+func Uint32ToBytes(n uint32) []byte {
+	return []byte{
+		byte(n),
+		byte(n >> 8),
+		byte(n >> 16),
+		byte(n >> 24),
 	}
-	return fields[1]
-}
-
-// VarIntSerializeSize returns the number of bytes it would take to serialize
-// val as a variable length integer.
-func VarIntSerializeSize(val uint64) int {
-	// The value is small enough to be represented by itself, so it's
-	// just 1 byte.
-	if val < 0xfd {
-		return 1
-	}
-
-	// Discriminant 1 byte plus 2 bytes for the uint16.
-	if val <= math.MaxUint16 {
-		return 3
-	}
-
-	// Discriminant 1 byte plus 4 bytes for the uint32.
-	if val <= math.MaxUint32 {
-		return 5
-	}
-
-	// Discriminant 1 byte plus 8 bytes for the uint64.
-	return 9
 }

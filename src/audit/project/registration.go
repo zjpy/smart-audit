@@ -2,9 +2,12 @@ package project
 
 import (
 	"audit/common"
+	"audit/orgnization"
 	"audit/record"
+	"audit/rules"
 	"bytes"
 	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -34,7 +37,7 @@ type Registration struct {
 }
 
 func (r *Registration) CountKey() string {
-	return string(r.ID) + countKeySuffix
+	return r.ID.String() + countKeySuffix
 }
 
 func (r *Registration) GetCount() uint32 {
@@ -47,7 +50,7 @@ func (r *Registration) Validate() error {
 }
 
 func (r *Registration) Key() string {
-	return string(r.ID) + strconv.FormatUint(uint64(r.Index), 10)
+	return r.ID.String() + strconv.FormatUint(uint64(r.Index), 10)
 }
 
 func (r *Registration) Value() ([]byte, error) {
@@ -76,18 +79,64 @@ func (r *Registration) Value() ([]byte, error) {
 
 func RegistrationFromString(args []string,
 	stub shim.ChaincodeStubInterface) (*Registration, error) {
-	// todo 通过参数解析
-	registration := &Registration{}
+	if len(args) < 4 {
+		return nil, errors.New("初始化成员参数不足")
+	}
+	// 开始审计事件创建
+	registration := &Registration{
+		stub: stub,
+	}
+	// 获取审计当事人ID、项目ID、规则ID构建审计事件ID
+	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
+	}
+	projectID, err := strconv.ParseUint(args[1], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析项目ID出错，详细信息：%s", err.Error()))
+	}
+	ruleID, err := strconv.ParseUint(args[2], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
+	}
+	u32AuditeeID := common.Uint32ToBytes(uint32(auditeeID))
+	u32ProjectID := common.Uint32ToBytes(uint32(projectID))
+	u32RuleID := common.Uint32ToBytes(uint32(ruleID))
+	eventID, err := common.Uint256FromBytes(append(append(append(
+		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
+	}
+	registration.ID = *eventID
 
-	index, err := record.GetRecordCount(getRegistrationCountKey(registration.ID), stub)
+	// 获取时间戳
+	timeStamp, err := strconv.ParseUint(args[3], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
+	}
+	registration.Timestamp = timeStamp
+
+	// todo 先只构建只有Key信息的审计当事人、项目、规则，如果需要补全则需调用合约根据ID查询
+	registration.Auditee = orgnization.Auditee{
+		Member: &orgnization.Member{ID: uint32(auditeeID)}}
+	registration.Project = Project{ID: uint32(projectID)}
+	registration.Rule = rules.ValidationRelationship{ID: uint32(ruleID)}
+
+	// 构建用于规则验证的参数，第一个参数为规则ID
+	registration.Params = []string{strconv.Itoa(int(registration.Rule.ID))}
+	for i := 4; i < len(args); i++ {
+		registration.Params = append(registration.Params, args[i])
+	}
+
+	// 获取第几次录入信息
+	index, err := record.GetRecordCount(GetRegistrationCountKey(registration.ID), stub)
 	if err != nil {
 		return nil, err
 	}
-
 	registration.Index = index
 	return registration, nil
 }
 
-func getRegistrationCountKey(specID Uint256) string {
-	return string(specID) + countKeySuffix
+func GetRegistrationCountKey(specID common.Uint256) string {
+	return specID.String() + countKeySuffix
 }

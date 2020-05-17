@@ -27,6 +27,16 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		return invokes.RegisterProjectMain(args, stub)
 	case invokes.AddEvent:
 		return invokes.AddEventMain(args, stub)
+	case invokes.GetAuditee:
+		return invokes.GetAuditeeMain(args, stub)
+	case invokes.GetRule:
+		return invokes.GetRuleMain(args, stub)
+	case invokes.GetProject:
+		return invokes.GetProjectMain(args, stub)
+	case invokes.GetMaintainers:
+		return invokes.QueryMaintainersMain(stub)
+	case invokes.QueryEvents:
+		invokes.QueryEventMain(args, stub)
 	default:
 		return shim.Error(fmt.Sprintf("找不到名为%s的方法，调用失败", fn))
 	}

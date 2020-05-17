@@ -46,19 +46,19 @@ func (v *ValidationRelationship) Validate() error {
 }
 
 func registerValidationRelationship(p *ValidationRelationship,
-	stub shim.ChaincodeStubInterface) error {
+	stub shim.ChaincodeStubInterface) (uint32, error) {
 	count, err := record.GetRecordCount(ruleCountKey, stub)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	p.ID = count
 
 	if err := record.StoreItem(p, stub); err != nil {
-		return fmt.Errorf("审计业务%s存储失败，详细信息：%s", p.Key(), err)
+		return 0, fmt.Errorf("审计业务%s存储失败，详细信息：%s", p.Key(), err)
 	}
 	if err := record.StoreCount(p, stub); err != nil {
-		return fmt.Errorf("审计业务%s相应的索引值存储失败，详细信息：%s",
+		return 0, fmt.Errorf("审计业务%s相应的索引值存储失败，详细信息：%s",
 			p.Key(), err)
 	}
-	return nil
+	return p.ID, nil
 }

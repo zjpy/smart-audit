@@ -17,10 +17,10 @@ type ValidationExpression struct {
 	Expression string
 }
 
-func RegisterRules(expression []string, stub shim.ChaincodeStubInterface) error {
+func RegisterRules(expression []string, stub shim.ChaincodeStubInterface) (uint32, error) {
 	op, expressions, err := Parse(expression)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	relation := &ValidationRelationship{
@@ -29,7 +29,7 @@ func RegisterRules(expression []string, stub shim.ChaincodeStubInterface) error 
 	for _, v := range expressions {
 		ruleID, err := v.registerRule(stub)
 		if err != nil {
-			return err
+			return 0, err
 		}
 
 		relation.Rules[ruleID] = v.Type
