@@ -40,6 +40,8 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	default:
 		return shim.Error(fmt.Sprintf("找不到名为%s的方法，调用失败", fn))
 	}
+
+	return shim.Error(fmt.Sprintf("调用失败"))
 }
 
 func main() {

@@ -30,8 +30,8 @@ func GetRuleMain(args []string, stub shim.ChaincodeStubInterface) peer.Response 
 		return shim.Error(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
 	}
 
-	ruleKey := rules.ValidationRelationship{ID: uint32(ruleID)}.Key()
-	ruleBuf, err := stub.GetState(ruleKey)
+	rule := rules.ValidationRelationship{ID: uint32(ruleID)}
+	ruleBuf, err := stub.GetState(rule.Key())
 	if err != nil {
 		return shim.Error(fmt.Sprintf("获取规则出错，详细信息：%s", err.Error()))
 	}

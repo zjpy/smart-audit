@@ -43,9 +43,9 @@ func GetAuditeeMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 		return shim.Error(fmt.Sprintf("解析审计当事人ID出错，详细信息：%s", err.Error()))
 	}
 
-	auditeeKey := orgnization.Auditee{
-		Member: &orgnization.Member{ID: uint32(auditeeID)}}.Key()
-	ruleBuf, err := stub.GetState(auditeeKey)
+	auditee := orgnization.Auditee{
+		Member: &orgnization.Member{ID: uint32(auditeeID)}}
+	ruleBuf, err := stub.GetState(auditee.Key())
 	if err != nil {
 		return shim.Error(fmt.Sprintf("获取审计当事人信息出错，详细信息：%s", err.Error()))
 	}

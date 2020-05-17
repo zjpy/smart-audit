@@ -40,8 +40,8 @@ func GetProjectMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 	if err != nil {
 		return shim.Error(fmt.Sprintf("解析项目ID出错，详细信息：%s", err.Error()))
 	}
-	projectKey := project.Project{ID: uint32(projectID)}.Key()
-	ruleBuf, err := stub.GetState(projectKey)
+	project := project.Project{ID: uint32(projectID)}
+	ruleBuf, err := stub.GetState(project.Key())
 	if err != nil {
 		return shim.Error(fmt.Sprintf("获取项目信息出错，详细信息：%s", err.Error()))
 	}

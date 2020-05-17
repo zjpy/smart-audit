@@ -23,9 +23,9 @@ func QueryMaintainersMain(stub shim.ChaincodeStubInterface) peer.Response {
 	buffer.WriteString(`{"result":[`)
 
 	for i := uint64(0); i < count; i++ {
-		mKey := orgnization.Maintainer{
-			Member: &orgnization.Member{ID: uint32(i)}}.Key()
-		mBuf, err := stub.GetState(mKey)
+		maintainer := orgnization.Maintainer{
+			Member: &orgnization.Member{ID: uint32(i)}}
+		mBuf, err := stub.GetState(maintainer.Key())
 		if err != nil {
 			return shim.Error(fmt.Sprintf(
 				"获取审计维护人员信息出错，详细信息：%s", err.Error()))
