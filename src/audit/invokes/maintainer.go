@@ -39,6 +39,5 @@ func QueryMaintainersMain(stub shim.ChaincodeStubInterface) peer.Response {
 	buffer.WriteString(`]}`)
 	fmt.Printf("Query result: %s", buffer.String())
 
-	// todo 将结果反序列化，转为json再显示
 	return peer.Response{Payload: buffer.Bytes()}
 }

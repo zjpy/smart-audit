@@ -25,6 +25,7 @@ func GetRuleMain(args []string, stub shim.ChaincodeStubInterface) peer.Response 
 	if len(args) == 0 {
 		return shim.Error("查询失败，需要提供规则ID")
 	}
+
 	ruleID, err := strconv.ParseUint(args[0], 10, 32)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
@@ -36,6 +37,5 @@ func GetRuleMain(args []string, stub shim.ChaincodeStubInterface) peer.Response 
 		return shim.Error(fmt.Sprintf("获取规则出错，详细信息：%s", err.Error()))
 	}
 
-	// todo 将结果反序列化，转为json再显示
 	return peer.Response{Payload: ruleBuf}
 }

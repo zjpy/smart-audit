@@ -4,7 +4,7 @@ import (
 	"audit/common"
 	"audit/orgnization"
 	"audit/rules"
-	"bytes"
+	"encoding/json"
 	"errors"
 )
 
@@ -33,16 +33,10 @@ func (a *AuditeeSpecification) Key() string {
 }
 
 func (a *AuditeeSpecification) Value() ([]byte, error) {
-	// 这里不需要序列化所有的值，只是将Auditee, Project, Rule的Key值序列化即可
-	w := new(bytes.Buffer)
-	if err := common.WriteVarString(w, a.Auditee.Key()); err != nil {
-		return nil, errors.New("failed to serialize key of Auditee")
+	value, err := json.Marshal(a)
+	if err != nil {
+		return nil, errors.New("failed to marshal auditee specification")
 	}
-	if err := common.WriteVarString(w, a.Project.Key()); err != nil {
-		return nil, errors.New("failed to serialize key of Project")
-	}
-	if err := common.WriteVarString(w, a.Rule.Key()); err != nil {
-		return nil, errors.New("failed to serialize key of Auditee")
-	}
-	return w.Bytes(), nil
+
+	return value, nil
 }

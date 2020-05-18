@@ -6,10 +6,12 @@ import (
 	"audit/record"
 	"audit/rules"
 	"bytes"
+	"errors"
 	"fmt"
+	"strconv"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
-	"strconv"
 )
 
 func AddEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Response {
@@ -53,42 +55,69 @@ func QueryEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 		return shim.Error("查询失败，需要提查询供审计事件对应的当事人ID、项目ID以及规则ID")
 	}
 
-	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
+	// 根据传入的参数获取eventID
+	eventID, err := GetEventID(args)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
-	}
-	projectID, err := strconv.ParseUint(args[1], 10, 32)
-	if err != nil {
-		return shim.Error(fmt.Sprintf("解析审计事件对应项目ID出错，详细信息：%s", err.Error()))
-	}
-	ruleID, err := strconv.ParseUint(args[2], 10, 32)
-	if err != nil {
-		return shim.Error(fmt.Sprintf("解析审计事件对应规则ID出错，详细信息：%s", err.Error()))
-	}
-	u32AuditeeID := common.Uint32ToBytes(uint32(auditeeID))
-	u32ProjectID := common.Uint32ToBytes(uint32(projectID))
-	u32RuleID := common.Uint32ToBytes(uint32(ruleID))
-	eventID, err := common.Uint256FromBytes(append(append(append(
-		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
-	if err != nil {
-		return shim.Error(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
+		return shim.Error(err.Error())
 	}
 
 	// 获取第几次录入信息
 	index, err := record.GetRecordCount(project.GetRegistrationCountKey(*eventID), stub)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
+		return shim.Error(fmt.Sprintf("获取审计事件第几次录入信息出错，详细信息：%s", err.Error()))
 	}
 
 	// 获取开始及结束Key，查询满足条件的所有记录
-	reg := project.Registration{AuditeeSpecification: project.AuditeeSpecification{
-		ID: *eventID}}
+	result, err := getQueryEventResult(eventID, index, stub)
+	if err != nil {
+		return shim.Error(err.Error())
+	}
+	return shim.Success(result)
+}
+
+// 根据传入的参数获取审计事件ID
+func GetEventID(args []string) (*common.Uint256, error) {
+
+	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
+	}
+
+	projectID, err := strconv.ParseUint(args[1], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应项目ID出错，详细信息：%s", err.Error()))
+	}
+
+	ruleID, err := strconv.ParseUint(args[2], 10, 32)
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应规则ID出错，详细信息：%s", err.Error()))
+	}
+
+	u32AuditeeID := common.Uint32ToBytes(uint32(auditeeID))
+	u32ProjectID := common.Uint32ToBytes(uint32(projectID))
+	u32RuleID := common.Uint32ToBytes(uint32(ruleID))
+
+	eventID, err := common.Uint256FromBytes(append(append(append(
+		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
+	}
+
+	return eventID, nil
+}
+
+// 获取审计事件查询的最终结果，json格式
+func getQueryEventResult(eventID *common.Uint256,
+	index uint32, stub shim.ChaincodeStubInterface) ([]byte, error) {
+
+	reg := project.Registration{
+		AuditeeSpecification: project.AuditeeSpecification{ID: *eventID}}
 	startKey := reg.Key()
 	reg.Index = index
 	endKey := reg.Key()
 	resultsIterator, err := stub.GetStateByRange(startKey, endKey)
 	if err != nil {
-		return shim.Error(fmt.Sprintf("获取审计事件信息出错，详细信息：%s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("获取审计事件信息出错，详细信息：%s", err.Error()))
 	}
 	defer resultsIterator.Close()
 
@@ -96,12 +125,11 @@ func QueryEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 	bArrayMemberAlreadyWritten := false
 	buffer.WriteString(`{"result":[`)
 
-	// todo 将结果反序列化，转为json再显示
 	for resultsIterator.HasNext() {
 		//获取迭代器中的每一个值
 		queryResponse, err := resultsIterator.Next()
 		if err != nil {
-			return shim.Error("Fail")
+			return nil, errors.New("Fail")
 		}
 		if bArrayMemberAlreadyWritten == true {
 			buffer.WriteString(",")
@@ -112,5 +140,6 @@ func QueryEventMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 	}
 	buffer.WriteString(`]}`)
 	fmt.Printf("Query result: %s", buffer.String())
-	return shim.Success(buffer.Bytes())
+
+	return buffer.Bytes(), nil
 }

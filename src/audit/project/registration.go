@@ -5,7 +5,7 @@ import (
 	"audit/orgnization"
 	"audit/record"
 	"audit/rules"
-	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
@@ -54,27 +54,12 @@ func (r *Registration) Key() string {
 }
 
 func (r *Registration) Value() ([]byte, error) {
-	w := new(bytes.Buffer)
-	auditeeValue, err := r.AuditeeSpecification.Value()
+	value, err := json.Marshal(r)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("failed to marshal auditee specification")
 	}
-	// 此处只序列化Value就行？（多序列化了一个字节）
-	if err := common.WriteVarBytes(w, auditeeValue); err != nil {
-		return nil, errors.New("failed to serialize registration auditee value")
-	}
-	if err := common.WriteUint64(w, r.Timestamp); err != nil {
-		return nil, errors.New("failed to serialize registration timestamp")
-	}
-	if err := common.WriteVarUint(w, uint64(len(r.Params))); err != nil {
-		return nil, errors.New("failed to serialize length of registration params")
-	}
-	for _, v := range r.Params {
-		if err := common.WriteVarString(w, v); err != nil {
-			return nil, errors.New("failed to serialize params")
-		}
-	}
-	return w.Bytes(), nil
+
+	return value, nil
 }
 
 func RegistrationFromString(args []string,
@@ -86,26 +71,29 @@ func RegistrationFromString(args []string,
 	registration := &Registration{
 		stub: stub,
 	}
-	// 获取审计当事人ID、项目ID、规则ID构建审计事件ID
+
+	// 获取审计当事人ID
 	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
 	}
+
+	// 获取项目ID
 	projectID, err := strconv.ParseUint(args[1], 10, 32)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析项目ID出错，详细信息：%s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应项目ID出错，详细信息：%s", err.Error()))
 	}
+
+	// 获取规则ID
 	ruleID, err := strconv.ParseUint(args[2], 10, 32)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("解析审计事件对应规则ID出错，详细信息：%s", err.Error()))
 	}
-	u32AuditeeID := common.Uint32ToBytes(uint32(auditeeID))
-	u32ProjectID := common.Uint32ToBytes(uint32(projectID))
-	u32RuleID := common.Uint32ToBytes(uint32(ruleID))
-	eventID, err := common.Uint256FromBytes(append(append(append(
-		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
+
+	// 获取审计当事人ID、项目ID、规则ID构建审计事件ID
+	eventID, err := GetEventID(uint32(auditeeID), uint32(projectID), uint32(ruleID))
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
+		return nil, err
 	}
 	registration.ID = *eventID
 
@@ -135,6 +123,22 @@ func RegistrationFromString(args []string,
 	}
 	registration.Index = index
 	return registration, nil
+}
+
+// 根据传入的参数获取审计事件ID
+func GetEventID(auditeeID, projectID, ruleID uint32) (*common.Uint256, error) {
+
+	u32AuditeeID := common.Uint32ToBytes(auditeeID)
+	u32ProjectID := common.Uint32ToBytes(projectID)
+	u32RuleID := common.Uint32ToBytes(ruleID)
+
+	eventID, err := common.Uint256FromBytes(append(append(append(
+		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
+	}
+
+	return eventID, nil
 }
 
 func GetRegistrationCountKey(specID common.Uint256) string {

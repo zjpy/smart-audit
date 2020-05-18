@@ -1,12 +1,12 @@
 package project
 
 import (
-	"audit/common"
 	"audit/record"
-	"bytes"
+	"encoding/json"
 	"errors"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 const (
@@ -44,14 +44,12 @@ func (p *Project) Key() string {
 }
 
 func (p *Project) Value() ([]byte, error) {
-	w := new(bytes.Buffer)
-	if err := common.WriteVarString(w, p.Name); err != nil {
-		return nil, errors.New("failed to serialize project name")
+	value, err := json.Marshal(p)
+	if err != nil {
+		return nil, errors.New("failed to marshal project")
 	}
-	if err := common.WriteVarString(w, p.Description); err != nil {
-		return nil, errors.New("failed to serialize project description")
-	}
-	return w.Bytes(), nil
+
+	return value, nil
 }
 
 func FromStrings(args []string, stub shim.ChaincodeStubInterface) (*Project, error) {

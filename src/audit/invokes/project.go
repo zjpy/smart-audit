@@ -36,15 +36,16 @@ func GetProjectMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 	if len(args) == 0 {
 		return shim.Error("查询失败，需要提供项目ID")
 	}
+
 	projectID, err := strconv.ParseUint(args[0], 10, 32)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("解析项目ID出错，详细信息：%s", err.Error()))
 	}
-	project := project.Project{ID: uint32(projectID)}
-	ruleBuf, err := stub.GetState(project.Key())
+
+	pj := project.Project{ID: uint32(projectID)}
+	ruleBuf, err := stub.GetState(pj.Key())
 	if err != nil {
 		return shim.Error(fmt.Sprintf("获取项目信息出错，详细信息：%s", err.Error()))
 	}
-	// todo 将结果反序列化，转为json再显示
 	return peer.Response{Payload: ruleBuf}
 }

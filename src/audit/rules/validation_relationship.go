@@ -3,9 +3,12 @@ package rules
 import (
 	"audit/contract"
 	"audit/record"
+	"encoding/json"
+	"errors"
 	"fmt"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 const (
@@ -37,8 +40,12 @@ func (v *ValidationRelationship) Key() string {
 }
 
 func (v *ValidationRelationship) Value() ([]byte, error) {
-	// todo complete me
-	return nil, nil
+	value, err := json.Marshal(v)
+	if err != nil {
+		return nil, errors.New("failed to marshal validation relationship")
+	}
+
+	return value, nil
 }
 
 func (v *ValidationRelationship) Validate() error {

@@ -1,11 +1,11 @@
 package orgnization
 
 import (
-	"audit/common"
-	"bytes"
+	"encoding/json"
 	"errors"
-	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"strconv"
+
+	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
 // 一个组织中成员的基本结构
@@ -29,11 +29,12 @@ func (m *Member) Key() string {
 }
 
 func (m *Member) Value() ([]byte, error) {
-	w := new(bytes.Buffer)
-	if err := common.WriteVarString(w, m.Name); err != nil {
-		return nil, errors.New("failed to serialize member name")
+	value, err := json.Marshal(m)
+	if err != nil {
+		return nil, errors.New("failed to marshal member")
 	}
-	return w.Bytes(), nil
+
+	return value, nil
 }
 
 func MemberFromString(args []string,

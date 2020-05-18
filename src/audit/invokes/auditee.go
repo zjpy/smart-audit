@@ -38,6 +38,7 @@ func GetAuditeeMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 	if len(args) == 0 {
 		return shim.Error("查询失败，需要提供审计当事人ID")
 	}
+
 	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
 	if err != nil {
 		return shim.Error(fmt.Sprintf("解析审计当事人ID出错，详细信息：%s", err.Error()))
@@ -49,6 +50,6 @@ func GetAuditeeMain(args []string, stub shim.ChaincodeStubInterface) peer.Respon
 	if err != nil {
 		return shim.Error(fmt.Sprintf("获取审计当事人信息出错，详细信息：%s", err.Error()))
 	}
-	// todo 将结果反序列化，转为json再显示
+
 	return peer.Response{Payload: ruleBuf}
 }
