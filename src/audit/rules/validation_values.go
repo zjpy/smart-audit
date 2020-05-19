@@ -2,6 +2,7 @@ package rules
 
 import (
 	"audit/contract"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -22,8 +23,15 @@ type ValidationValue struct {
 func ValidateRules(ruleID uint32, expressions []string,
 	stub shim.ChaincodeStubInterface) error {
 
-	// todo 这里通过ruleID获取相应的ValidationRelationship
-	relation := &ValidationRelationship{}
+	relation := &ValidationRelationship{ID: ruleID}
+	value, err := stub.GetState(relation.Key())
+	if err != nil {
+		return errors.New("规则ID对应的规则不存在，详细信息：" + err.Error())
+	}
+
+	if err := json.Unmarshal(value, relation); err != nil {
+		return errors.New("规则解析失败，详细信息：" + err.Error())
+	}
 
 	items, err := parseRuleValues(expressions)
 	if err != nil {
