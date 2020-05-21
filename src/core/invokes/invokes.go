@@ -1,13 +1,13 @@
 package invokes
 
 const (
-	RegisterRule = "register-rule"
-	RegisterAuditee = "register-auditee"
-	RegisterProject = "register-project"
-	AddEvent = "add-event"
-	GetRule = "get-rule"
-	GetMaintainers = "get-maintainers"
-	GetAuditee = "get-auditee"
-	GetProject = "get-project"
-	QueryEvents = "query-events"
+	RegisterRule = "registerRule"
+	RegisterAuditee = "registerAuditee"
+	RegisterProject = "registerProject"
+	AddEvent = "addEvent"
+	GetRule = "getRule"
+	GetMaintainers = "getMaintainers"
+	GetAuditee = "getAuditee"
+	GetProject = "getProject"
+	QueryEvents = "queryEvents"
 )
