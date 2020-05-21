@@ -48,7 +48,7 @@ func verify(registration *project.Registration, context contract.Context) error 
 }
 
 // 根据审计当事人ID、项目ID以及规则ID，获取所有审计当事人的审计事件
-func QueryEventMain(args []string, context contract.Context) *contract.Response {
+func QueryEventsMain(args []string, context contract.Context) *contract.Response {
 	if len(args) < 3 {
 		return contract.Error("查询失败，需要提查询供审计事件对应的当事人ID、项目ID以及规则ID")
 	}

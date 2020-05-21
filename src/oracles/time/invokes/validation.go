@@ -9,7 +9,7 @@ import (
 
 var validation contract.Validation = initValidation()
 
-func ValidateTimeMain(args []string) *contract.Response {
+func ValidateMain(args []string) *contract.Response {
 	if len(args) == 0 {
 		return contract.Error("缺少规则ID")
 	}

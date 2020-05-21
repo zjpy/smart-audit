@@ -25,7 +25,7 @@ func (s *TimeService) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	case core.RegisterFunctionName:
 		return contract.Response(invokes.RegisterMain(args, context))
 	case core.ValidationFunctionName:
-		return contract.Response(invokes.ValidateTimeMain(args))
+		return contract.Response(invokes.ValidateMain(args))
 	default:
 		return shim.Error(fmt.Sprintf("找不到名为%s的方法，调用失败",
 			context.GetFunctionName()))

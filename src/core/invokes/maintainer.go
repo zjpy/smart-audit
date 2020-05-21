@@ -9,7 +9,7 @@ import (
 )
 
 // 查询所有的审计运维人员信息
-func QueryMaintainersMain(context contract.Context) *contract.Response {
+func GetMaintainersMain(context contract.Context) *contract.Response {
 	countBuf, err := context.GetState(orgnization.MaintainerCountKey)
 	if err != nil {
 		return contract.Error(fmt.Sprintf("获取审计当事人信息出错，详细信息：%s", err.Error()))

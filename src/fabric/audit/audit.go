@@ -37,9 +37,9 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	case invokes.GetProject:
 		return contract.Response(invokes.GetProjectMain(args, context))
 	case invokes.GetMaintainers:
-		return contract.Response(invokes.QueryMaintainersMain(context))
+		return contract.Response(invokes.GetMaintainersMain(context))
 	case invokes.QueryEvents:
-		return contract.Response(invokes.QueryEventMain(args, context))
+		return contract.Response(invokes.QueryEventsMain(args, context))
 	default:
 		return shim.Error(fmt.Sprintf("找不到名为%s的方法，调用失败",
 			context.GetFunctionName()))
