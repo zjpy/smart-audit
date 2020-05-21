@@ -1,5 +1,5 @@
-contract_audit
-contract_face
-contract_identify
-contract_location
-contract_time
+contract_audit.wasm
+contract_face.wasm
+contract_identify.wasm
+contract_location.wasm
+contract_time.wasm
