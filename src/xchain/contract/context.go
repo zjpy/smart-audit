@@ -3,6 +3,8 @@ package contract
 import (
 	"core/contract"
 	"github.com/xuperchain/xuperchain/core/contractsdk/go/code"
+	"sort"
+	"strconv"
 )
 
 type ContextImpl struct {
@@ -13,9 +15,8 @@ func (c *ContextImpl) GetFunctionName() string {
 	return c.ctx.Caller()
 }
 
-func (c *ContextImpl) GetArgs() []string {
-	// todo implement me
-	return nil
+func (c *ContextImpl) GetArgs() (rtn []string) {
+	return mapToArray(c.ctx.Args())
 }
 
 func (c *ContextImpl) PutState(key string, value []byte) error {
@@ -31,19 +32,39 @@ func (c *ContextImpl) DeleteState(key string) error {
 }
 
 func (c *ContextImpl) GetStateByRange(startKey, endKey string) (contract.Iterator, error) {
-	// todo 填入正确的limit
-	return NewIterator(c.ctx.NewIterator([]byte(startKey), nil)), nil
+	return NewIterator(
+		c.ctx.NewIterator([]byte(startKey), []byte(endKey))), nil
 }
 
-func (c *ContextImpl) InvokeContract(name, function string, args [][]byte) contract.Response {
-	// todo 填入正确的args
-	res, err := c.ctx.Call("wasm", name, function, nil)
+func (c *ContextImpl) InvokeContract(name, function string, args []string) contract.Response {
+	res, err := c.ctx.Call("wasm", name, function, arrayToMap(args))
 	if err != nil {
 		return contract.Response{Err: err}
 	}
 	return contract.Response{
 		Payload: res.Body,
 	}
+}
+
+func arrayToMap(args []string) map[string][]byte {
+	argMap := make(map[string][]byte)
+	for i, v := range args {
+		argMap[strconv.FormatInt(int64(i), 32)] = []byte(v)
+	}
+	return argMap
+}
+
+func mapToArray(argsMap map[string][]byte) (rtn []string) {
+	var keys []string
+	for k := range argsMap {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, v := range keys {
+		rtn = append(rtn, string(argsMap[v]))
+	}
+	return
 }
 
 func NewContext(ctx code.Context) *ContextImpl {
