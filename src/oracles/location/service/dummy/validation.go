@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math"
 	"oracles/location/service"
+	"strings"
 )
 
 const (
@@ -32,7 +33,11 @@ type LocationValidation struct {
 }
 
 func (t *LocationValidation) Validate(id contract.ServiceRuleID, args []string) error {
-	position, err := service.PositionFromString(args)
+	if len(args) < 1 {
+		return errors.New("地理位置解析需要的参数不足")
+	}
+	positionArgs := strings.Split(args[0], " ")
+	position, err := service.PositionFromString(positionArgs)
 	if err != nil {
 		return errors.New("地理位置解析出错: " + err.Error())
 	}

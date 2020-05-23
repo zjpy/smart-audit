@@ -26,11 +26,7 @@ func (f *FaceValidation) Validate(id contract.ServiceRuleID, args []string) erro
 		return err
 	}
 
-	if len(args) < 2 {
-		return errors.New("缺少用户ID信息")
-	}
-
-	return f.faceCompare(args[1], feature)
+	return f.faceCompare(args[0], feature)
 }
 
 // 调用人脸预言机服务中的人脸特征提取接口用以返回图片中相应人脸的特征值。

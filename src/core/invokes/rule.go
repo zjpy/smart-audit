@@ -11,9 +11,11 @@ import (
 func RegisterRuleMain(args []string, context contract.Context) *contract.Response {
 	ruleID, err := rules2.RegisterRules(args, context)
 	if err != nil {
+		fmt.Println("注册规则失败：", err.Error())
 		return contract.Error(fmt.Sprint("注册规则失败，详细信息：", err))
 	}
 
+	fmt.Println("审计规则录入成功，规则ID：", ruleID)
 	return &contract.Response{
 		Payload: []byte(strconv.FormatUint(uint64(ruleID), 32)),
 	}
@@ -30,7 +32,9 @@ func GetRuleMain(args []string, context contract.Context) *contract.Response {
 		return contract.Error(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
 	}
 
-	rule := rules2.ValidationRelationship{ID: uint32(ruleID)}
+	rule := rules2.ValidationRelationship{
+		Rules: make(map[rules2.RuleType]contract.ServiceRuleID, 0),
+		ID:    uint32(ruleID)}
 	ruleBuf, err := context.GetState(rule.Key())
 	if err != nil {
 		return contract.Error(fmt.Sprintf("获取规则出错，详细信息：%s", err.Error()))

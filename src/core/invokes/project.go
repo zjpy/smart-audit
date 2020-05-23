@@ -22,11 +22,16 @@ func RegisterProjectMain(args []string, context contract.Context) *contract.Resp
 	if err = record.StoreItem(p, context); err != nil {
 		return contract.Error(fmt.Sprintf("审计业务%s存储失败，详细信息：%s", p.Key(), err))
 	}
+
 	if err = record.StoreCount(p, context); err != nil {
 		return contract.Error(fmt.Sprintf("审计业务%s相应的索引值存储失败，详细信息：%s",
 			p.Key(), err))
 	}
-	return &contract.Response{}
+
+	fmt.Println("项目录入成功，项目ID：", p.ID)
+	return &contract.Response{
+		Payload: []byte(strconv.FormatUint(uint64(p.ID), 32)),
+	}
 }
 
 // 根据项目ID获取项目信息

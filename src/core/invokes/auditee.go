@@ -27,6 +27,7 @@ func RegisterAuditeeMain(args []string, context contract.Context) *contract.Resp
 			auditee.Key(), err))
 	}
 
+	fmt.Println("审计当事人录入成功，当事人ID：", auditee.ID)
 	return &contract.Response{
 		Payload: []byte(strconv.FormatUint(uint64(auditee.ID), 32)),
 	}

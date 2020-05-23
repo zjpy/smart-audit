@@ -31,7 +31,9 @@ func AddEventMain(args []string, context contract.Context) *contract.Response {
 		return contract.Error(fmt.Sprintf("合规事件%s相应的索引值存储失败，详细信息：%s",
 			registration.Key(), err))
 	}
-	return &contract.Response{Payload: []byte("OK")}
+
+	fmt.Println("审计事件录入成功, 审计事件ID:", registration.ID)
+	return &contract.Response{Payload: registration.ID.Bytes()}
 }
 
 func verify(registration *project.Registration, context contract.Context) error {
@@ -95,13 +97,12 @@ func GetEventID(args []string) (*common.Uint256, error) {
 	u32ProjectID := common.Uint32ToBytes(uint32(projectID))
 	u32RuleID := common.Uint32ToBytes(uint32(ruleID))
 
-	eventID, err := common.Uint256FromBytes(append(append(append(
-		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
-	}
+	ids := append(append(append(
+		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...)
+	var eventID common.Uint256
+	copy(eventID[:], ids)
 
-	return eventID, nil
+	return &eventID, nil
 }
 
 // 获取审计事件查询的最终结果，json格式

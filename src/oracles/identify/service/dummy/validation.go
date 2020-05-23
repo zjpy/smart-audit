@@ -26,11 +26,7 @@ func (f *EntityIdentifyValidation) Validate(id contract.ServiceRuleID, args []st
 		return err
 	}
 
-	if len(args) < 2 {
-		return errors.New("缺少物体类别ID信息")
-	}
-
-	return f.entityCompare(args[1], feature)
+	return f.entityCompare(args[0], feature)
 }
 
 // 调用物体识别预言机服务中的特征提取接口用以返回图片中相应物体的特征值。

@@ -33,8 +33,7 @@ func RegistrationFromString(args []string,
 		return nil, errors.New("初始化成员参数不足")
 	}
 	// 开始审计事件创建
-	registration := &Registration{
-	}
+	registration := &Registration{}
 
 	// 获取审计当事人ID
 	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
@@ -55,11 +54,8 @@ func RegistrationFromString(args []string,
 	}
 
 	// 获取审计当事人ID、项目ID、规则ID构建审计事件ID
-	eventID, err := GetEventID(uint32(auditeeID), uint32(projectID), uint32(ruleID))
-	if err != nil {
-		return nil, err
-	}
-	registration.ID = *eventID
+	eventID := GetEventID(uint32(auditeeID), uint32(projectID), uint32(ruleID))
+	registration.ID = eventID
 
 	// 获取时间戳
 	timeStamp, err := strconv.ParseUint(args[3], 10, 32)
@@ -72,10 +68,12 @@ func RegistrationFromString(args []string,
 	registration.Auditee = orgnization.Auditee{
 		Member: &orgnization.Member{ID: uint32(auditeeID)}}
 	registration.Project = Project{ID: uint32(projectID)}
-	registration.Rule = rules2.ValidationRelationship{ID: uint32(ruleID)}
+	registration.Rule = rules2.ValidationRelationship{
+		Rules: make(map[rules2.RuleType]contract.ServiceRuleID, 0),
+		ID:    uint32(ruleID)}
 
-	// 构建用于规则验证的参数，第一个参数为规则ID
-	registration.Params = []string{strconv.Itoa(int(registration.Rule.ID))}
+	// 构建用于规则验证的参数
+	registration.Params = make([]string, 0)
 	for i := 4; i < len(args); i++ {
 		registration.Params = append(registration.Params, args[i])
 	}
@@ -90,19 +88,17 @@ func RegistrationFromString(args []string,
 }
 
 // 根据传入的参数获取审计事件ID
-func GetEventID(auditeeID, projectID, ruleID uint32) (*common.Uint256, error) {
+func GetEventID(auditeeID, projectID, ruleID uint32) common.Uint256 {
 
 	u32AuditeeID := common.Uint32ToBytes(auditeeID)
 	u32ProjectID := common.Uint32ToBytes(projectID)
 	u32RuleID := common.Uint32ToBytes(ruleID)
 
-	eventID, err := common.Uint256FromBytes(append(append(append(
-		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...))
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("构建审计事件ID出错，详细信息：%s", err.Error()))
-	}
-
-	return eventID, nil
+	ids := append(append(append(
+		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...)
+	var eventID common.Uint256
+	copy(eventID[:], ids)
+	return eventID
 }
 
 func GetRegistrationCountKey(specID common.Uint256) string {

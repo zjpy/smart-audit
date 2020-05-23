@@ -1,10 +1,9 @@
 package rules
 
 import (
-	"bytes"
-	"core/common"
 	"core/contract"
 	"fmt"
+	"strconv"
 )
 
 type ValidationExpression struct {
@@ -23,6 +22,7 @@ func RegisterRules(expression []string, context contract.Context) (uint32, error
 
 	relation := &ValidationRelationship{
 		Operator: op,
+		Rules:    make(map[RuleType]contract.ServiceRuleID, 0),
 	}
 	for _, v := range expressions {
 		ruleID, err := v.registerRule(context)
@@ -57,9 +57,7 @@ func (r *ValidationExpression) registerFromContract(contractName string,
 		return 0, rtn.Err
 	}
 
-	buf := bytes.Buffer{}
-	buf.Write(rtn.Payload)
-	id, err := common.ReadUint32(&buf)
+	id, err := strconv.Atoi(string(rtn.Payload))
 	if err != nil {
 		return 0, err
 	}
