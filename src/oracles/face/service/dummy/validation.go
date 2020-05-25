@@ -40,12 +40,12 @@ func (f *FaceValidation) getFaceFeature(faceRaw string) (rtn []byte, err error) 
 }
 
 // 调用人脸预言机服务中的人脸比对接口，并返回包含FaceCompareResult中内容的比对结果。
-// 这里我们返回一个人脸评分在0.93~1之间的数值，以模拟在以0.95为界有>80%通过率的情况
+// 这里我们返回一个人脸评分在93~100之间的数值，以模拟在以95为界有>80%通过率的情况
 func (f *FaceValidation) getFaceCompareResult(id string,
 	rtn []byte) service.FaceCompareResult {
 	return service.FaceCompareResult{
 		Result:   0,
-		Score:    0.93 + float32(mrand.Int31n(7))*0.01,
+		Score:    93 + uint32(mrand.Int31n(7)),
 		Sequence: "XXXXX",
 	}
 }
@@ -53,7 +53,7 @@ func (f *FaceValidation) getFaceCompareResult(id string,
 // 这里对人脸比对评分进行评价，评分超过或等于0.95则验证成功，否则视为非本人的情况
 func (f *FaceValidation) faceCompare(id string, rtn []byte) error {
 	result := f.getFaceCompareResult(id, rtn)
-	if result.Score < 0.95 {
+	if result.Score < 95 {
 		return errors.New("非本人操作")
 	}
 	return nil
