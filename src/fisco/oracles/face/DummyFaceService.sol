@@ -5,6 +5,7 @@ import "./interface/IService.sol";
 import "./Result.sol";
 
 
+// 该智能合约用于模拟人脸识别的预言机服务调用
 contract DummyFaceService is IService {
     uint32 nonce;
 
