@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
-import "./rules.sol";
+import "./Rules.sol";
 
 contract Audit is Rules {
 
@@ -15,7 +15,7 @@ contract Audit is Rules {
         address identify,
         address time,
         address location
-    ) Base(face, identify, time, location) {
+    ) Rules (face, identify, time, location) {
 
     }
 }

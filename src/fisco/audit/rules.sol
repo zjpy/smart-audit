@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
 import "./interface/IService.sol";
+import "./Utils.sol";
 
 
 // 规则抽象合约，封装规则注册以及验证相关的逻辑
@@ -73,14 +74,14 @@ contract Rules {
         ValidationExpression[] memory expressions;
         (op, expressions) = parseRuleExpressions(args);
 
-        ValidationRelationship relation;
+        ValidationRelationship storage relation;
         relation.Operator = op;
         for (uint32 i = 0; i < expressions.length; i++) {
             uint32 id = registerRule(
                 expressions[i].Type,
                 expressions[i].Expression
             );
-            relation.Rules[expressions[i].Type] = id;
+            relation.Rules[uint32(expressions[i].Type)] = id;
         }
 
         relationID = relationsCount;
@@ -99,10 +100,10 @@ contract Rules {
         ValidationValue[] memory valueList;
         valueList = parseRuleValues(expressions);
 
-        ValidationRelationship memory relation = relationMap[relationID];
+        ValidationRelationship storage relation = relationMap[relationID];
         for (uint32 i = 0; i < valueList.length; i++) {
             RuleType t = valueList[i].Type;
-            uint32 ruleID = relation.Rules[t];
+            uint32 ruleID = relation.Rules[uint32(t)];
             require(ruleID != 0, "规则类型不在需要验证的列表中");
 
             validateRule(t, ruleID, valueList[i].ActualValues);
@@ -115,7 +116,7 @@ contract Rules {
     /// @return expressions 返回所有规则项
     function parseRuleExpressions(string[] args)
         internal
-        returns (LogicOperator op, ValidationExpression[] memory expressions)
+        returns (LogicOperator op, ValidationExpression[] storage expressions)
     {
         require(args.length > 0, "规则解析参数不足");
 
@@ -153,8 +154,8 @@ contract Rules {
             require(false, "编码类型尚未支持");
         }
 
-        string[] args;
-        args.push(expression);
+        string[] memory args = new string[](1);
+        args[0] = expression;
         return service.register(args);
     }
 
@@ -163,7 +164,7 @@ contract Rules {
     /// @return valueList 规则验证值列表.
     function parseRuleValues(string[] expressions)
         internal
-        returns (ValidationValue[] memory valueList)
+        returns (ValidationValue[] storage valueList)
     {
         for (uint32 i = 0; i + 1 < expressions.length; i += 2) {
             RuleType t = getRuleType(expressions[i]);
@@ -177,35 +178,18 @@ contract Rules {
     }
 
     /// @dev 根据类型对应的字符串返回相应的LogicOperator类型.
-    /// @param world 类型对应的字符串表示.
+    /// @param word 类型对应的字符串表示.
     /// @return op 一个LogicOperator类型.
     function getLogicOperator(string memory word)
         internal
+        pure
         returns (LogicOperator op)
     {
-        if (word == "AND") {
+        if (Utils.compareStrings(word, "AND")) {
             return LogicOperator.AND;
-        } else if (word == "OR") {
+        } else if (Utils.compareStrings(word, "OR")) {
             return LogicOperator.OR;
-        } else if (word == "NOT") {
-            return LogicOperator.NOT;
-        } else {
-            return LogicOperator.NONE;
-        }
-    }
-
-    /// @dev 返回一个LogicOperator类型对应的字符串表示.
-    /// @param op 一个LogicOperator类型.
-    /// @return world 类型对应的字符串表示.
-    function logicOperatorToString(LogicOperator op)
-        internal
-        returns (string memory word)
-    {
-        if (word == "AND") {
-            return LogicOperator.AND;
-        } else if (word == "OR") {
-            return LogicOperator.OR;
-        } else if (word == "NOT") {
+        } else if (Utils.compareStrings(word, "NOT")) {
             return LogicOperator.NOT;
         } else {
             return LogicOperator.NONE;
@@ -213,16 +197,20 @@ contract Rules {
     }
 
     /// @dev 根据类型对应的字符串返回相应的RuleType类型.
-    /// @param world 类型对应的字符串表示.
+    /// @param word 类型对应的字符串表示.
     /// @return t 一个RuleType类型.
-    function getRuleType(string memory word) internal returns (RuleType t) {
-        if (word == "Time") {
+    function getRuleType(string memory word)
+        internal
+        pure
+        returns (RuleType t)
+    {
+        if (Utils.compareStrings(word, "Time")) {
             return RuleType.Time;
-        } else if (word == "Location") {
+        } else if (Utils.compareStrings(word, "Location")) {
             return RuleType.Location;
-        } else if (word == "FaceRecognize") {
+        } else if (Utils.compareStrings(word, "FaceRecognize")) {
             return RuleType.FaceRecognize;
-        } else if (word == "ObjectRecognize") {
+        } else if (Utils.compareStrings(word, "ObjectRecognize")) {
             return RuleType.ObjectRecognize;
         } else {
             return RuleType.None;
@@ -231,9 +219,10 @@ contract Rules {
 
     /// @dev 返回一个RuleType类型对应的字符串表示.
     /// @param t 一个RuleType类型.
-    /// @return world 类型对应的字符串表示.
+    /// @return word 类型对应的字符串表示.
     function ruleTypeToString(RuleType t)
         internal
+        pure
         returns (string memory word)
     {
         if (t == RuleType.Time) {
@@ -252,7 +241,7 @@ contract Rules {
     /// @dev 验证一个规则项.
     /// @param t 规则类型，这里会根据规则类型匹配到对应的预言机服务.
     /// @param ruleID 返回在预言机服务中注册后对应的规则ID
-    /// @param value 需要验证的规则值.
+    /// @param values 需要验证的规则值.
     function validateRule(
         RuleType t,
         uint32 ruleID,
@@ -271,8 +260,8 @@ contract Rules {
             require(false, "编码类型尚未支持");
         }
 
-        string[] args;
-        args.push(values);
+        string[] memory args = new string[](1);
+        args[0] = values;
         return service.validate(ruleID, args);
     }
 }
