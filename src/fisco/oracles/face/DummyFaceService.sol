@@ -18,32 +18,16 @@ contract DummyFaceService is IService {
     /// @dev 注册一个规则项.
     /// @param args 注册规则参数，以数组形式表示.
     /// @return ruleID 返回在预言机服务中注册后对应的规则ID
-    /// @return errorCode 错误码，如果为0则表示没有错误，否则发生注册错误.
-    /// @return message 返回结果信息.
-    function register(string[] args)
-        public
-        returns (
-            uint32 ruleID,
-            uint32 errorCode,
-            string memory message
-        )
-    {
+    function register(string[] args) public returns (uint32 ruleID) {
         // 由于假设是固定的验证规则，所以这里不需要额外工作
-        return (0, 0, "");
+        return 0;
     }
 
     /// @dev 验证一个规则项.
     /// @param ruleID 返回在预言机服务中注册后对应的规则ID
     /// @param args 验证规则所需的值，以数组形式表示.
-    /// @return errorCode 错误码，如果为0则表示没有错误，否则发生注册错误.
-    /// @return message 返回结果信息.
-    function validate(uint32 ruleID, string[] args)
-        public
-        returns (uint32 errorCode, string memory message)
-    {
-        if (args.length < 0) {
-            return (1, "缺少人脸数据");
-        }
+    function validate(uint32 ruleID, string[] args) public {
+        require(args.length > 0, "缺少人脸数据");
 
         // 云从科技的人脸对比服务支持base64编码的图片以及由图片生成的特征码，为了减轻人脸识别存储端的压力，
         //	且考虑到对个人肖像隐私保护，我们在预言机服务中使用的是特征码形式存储。一个典型的特征码如下所示（
@@ -51,10 +35,7 @@ contract DummyFaceService is IService {
         // Q+tGPz8InT9O7A0+8bwUwJy4oL+55MS+ADWFv0Bze75mG8o/.../bLSfOk3W7zoAAIA/U3xdwg==
 
         bytes memory feature;
-        (feature, errorCode, message) = getFaceFeature(args[0]);
-        if (errorCode != 0) {
-            return (errorCode, message);
-        }
+        feature = getFaceFeature(args[0]);
 
         return faceCompare(args[0], feature);
     }
@@ -62,20 +43,14 @@ contract DummyFaceService is IService {
     /// @dev 调用人脸预言机服务中的人脸特征提取接口用以返回图片中相应人脸的特征值。
     /// @param faceRaw 返回在预言机服务中注册后对应的规则ID
     /// @return rtn 特征人脸图像的特征值.
-    /// @return errorCode 错误码，如果为0则表示没有错误，否则发生注册错误.
-    /// @return message 返回结果信息.
     function getFaceFeature(string memory faceRaw)
         private
-        returns (
-            bytes memory rtn,
-            uint32 errorCode,
-            string memory message
-        )
+        returns (bytes memory rtn)
     {
         // 这里我们简单返回一个单值模拟该特征值生成过程
         rtn = new bytes(1);
         rtn[0] = bytes1(1);
-        return (rtn, 0, "");
+        return rtn;
     }
 
     /// @dev 这里对人脸比对评分进行评价，评分超过或等于0.95则验证成功，否则视为非本人的情况
@@ -83,19 +58,12 @@ contract DummyFaceService is IService {
     /// @param feature 特征人脸图像的特征值
     /// @return errorCode 错误码，如果为0则表示没有错误，否则发生注册错误.
     /// @return message 返回结果信息.
-    function faceCompare(string ruleID, bytes memory feature)
-        private
-        returns (uint32 errorCode, string memory message)
-    {
+    function faceCompare(string ruleID, bytes memory feature) private {
         Result.FaceCompare memory result = getFaceCompareResult(
             ruleID,
             feature
         );
-        if (result.Score < 95) {
-            return (1, "非本人操作");
-        }
-
-        return (0, "验证成功");
+        require(result.Score >= 95, "非本人操作");
     }
 
     /// @dev 调用人脸预言机服务中的人脸比对接口，并返回包含FaceCompareResult中内容的比对结果。
