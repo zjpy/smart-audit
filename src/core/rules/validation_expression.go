@@ -40,7 +40,7 @@ func (r *ValidationExpression) registerRule(
 	context contract.Context) (contract.ServiceRuleID, error) {
 	switch r.Type {
 	case Time, Location, FaceRecognize, ObjectRecognize:
-		return r.registerFromContract(r.Type.ContractName(), context)
+		return r.registerFromContract(string(r.Type), context)
 	default:
 		return 0, fmt.Errorf("编码为%d的类型尚未支持", r.Type)
 	}

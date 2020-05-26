@@ -71,13 +71,13 @@ func getLogicOperator(word string) (contract.LogicOperator, error) {
 // 获取最前面的规则类型
 func getRuleType(word string) (RuleType, error) {
 	switch word {
-	case Time.ContractName():
+	case string(Time):
 		return Time, nil
-	case Location.ContractName():
+	case string(Location):
 		return Location, nil
-	case FaceRecognize.ContractName():
+	case string(FaceRecognize):
 		return FaceRecognize, nil
-	case ObjectRecognize.ContractName():
+	case string(ObjectRecognize):
 		return ObjectRecognize, nil
 	default:
 		return None, errors.New("未找到规则")

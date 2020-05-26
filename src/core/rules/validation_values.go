@@ -60,7 +60,7 @@ func setRuleIds(relation *ValidationRelationship, items []*ValidationValue) erro
 	for _, v := range items {
 		v.ID, ok = relation.Rules[v.Type]
 		if !ok {
-			return fmt.Errorf("规则类型%s不在需要验证的列表中", v.Type.ContractName())
+			return fmt.Errorf("规则类型%s不在需要验证的列表中", string(v.Type))
 		}
 	}
 	return nil
@@ -86,7 +86,7 @@ func (i *ValidationValue) Validate(context contract.Context) error {
 	case None:
 		return nil
 	case Time, Location, FaceRecognize, ObjectRecognize:
-		return i.validateFromContract(i.Type.ContractName(), context)
+		return i.validateFromContract(string(i.Type), context)
 	default:
 		return fmt.Errorf("编码为%d的类型尚未支持", i.Type)
 	}
