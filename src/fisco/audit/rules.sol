@@ -66,6 +66,17 @@ contract Rules {
         relationsCount = 0;
     }
 
+    /// @dev 注册一个规则项的事件.
+    /// @param ruleType 规则类型，以uint32形式表示.
+    /// @param expression 需要注册到预言机上的规则表达式.
+    event registerRuleEvent(uint32 ruleType, string expression);
+
+    /// @dev 验证一个规则项的事件.
+    /// @param ruleType 规则类型，以uint32形式表示.
+    /// @param ruleID 返回在预言机服务中注册后对应的规则ID
+    /// @param values 需要验证的规则值.
+    event validateRuleEvent(uint32 ruleType, uint32 ruleID, string values);
+
     /// @dev 注册一条完整规则参数值中的所有规则项.
     /// @param args 所有表达式列表.
     /// @return relationID 返回在智能合约中注册后对应的规则关系ID
@@ -77,6 +88,11 @@ contract Rules {
         ValidationRelationship storage relation;
         relation.Operator = op;
         for (uint32 i = 0; i < expressions.length; i++) {
+            emit registerRuleEvent(
+                uint32(expressions[i].Type),
+                expressions[i].Expression
+            );
+
             uint32 id = registerRule(
                 expressions[i].Type,
                 expressions[i].Expression
@@ -106,6 +122,12 @@ contract Rules {
             uint32 ruleID = relation.Rules[uint32(t)];
             require(ruleID != 0, "规则类型不在需要验证的列表中");
 
+            emit validateRuleEvent(
+                uint32(t),
+                ruleID,
+                valueList[i].ActualValues
+            );
+
             validateRule(t, ruleID, valueList[i].ActualValues);
         }
     }
@@ -116,17 +138,21 @@ contract Rules {
     /// @return expressions 返回所有规则项
     function parseRuleExpressions(string[] args)
         internal
-        returns (LogicOperator op, ValidationExpression[] storage expressions)
+        returns (LogicOperator op, ValidationExpression[] memory expressions)
     {
         require(args.length > 0, "规则解析参数不足");
 
         op = getLogicOperator(args[0]);
 
+        expressions = new ValidationExpression[](args.length / 2);
+        uint32 index = 0;
         for (uint32 i = 1; i + 1 < args.length; i += 2) {
             RuleType t = getRuleType(args[i]);
-            expressions.push(
-                ValidationExpression({Type: t, Expression: args[i + 1]})
-            );
+            expressions[index] = ValidationExpression({
+                Type: t,
+                Expression: args[i + 1]
+            });
+            index++;
         }
         return (op, expressions);
     }

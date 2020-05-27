@@ -42,7 +42,7 @@ contract DummyFaceService is IService {
 
     /// @dev 调用人脸预言机服务中的人脸特征提取接口用以返回图片中相应人脸的特征值。
     /// @param faceRaw 返回在预言机服务中注册后对应的规则ID
-    /// @return rtn 特征人脸图像的特征值.
+    /// @return rtn 人脸图像的特征值.
     function getFaceFeature(string memory faceRaw)
         private
         returns (bytes memory rtn)
@@ -53,9 +53,9 @@ contract DummyFaceService is IService {
         return rtn;
     }
 
-    /// @dev 这里对人脸比对评分进行评价，评分超过或等于0.95则验证成功，否则视为非本人的情况
+    /// @dev 这里对人脸比对评分进行评价，评分超过或等于95则验证成功，否则视为非本人的情况
     /// @param ruleID 返回在预言机服务中注册后对应的规则ID
-    /// @param feature 特征人脸图像的特征值
+    /// @param feature 人脸图像的特征值
     /// @return errorCode 错误码，如果为0则表示没有错误，否则发生注册错误.
     /// @return message 返回结果信息.
     function faceCompare(string ruleID, bytes memory feature) private {
