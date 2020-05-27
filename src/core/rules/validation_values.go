@@ -19,12 +19,12 @@ type ValidationValue struct {
 	ID contract.ServiceRuleID
 }
 
-func ValidateRules(ruleID uint32, expressions []string,
+func ValidateRules(relationID uint32, expressions []string,
 	context contract.Context) error {
 
 	relation := &ValidationRelationship{
 		Rules: make(map[RuleType]contract.ServiceRuleID, 0),
-		ID:    ruleID}
+		ID:    relationID}
 	value, err := context.GetState(relation.Key())
 	if err != nil {
 		return errors.New("规则ID对应的规则不存在，详细信息：" + err.Error())
@@ -40,13 +40,11 @@ func ValidateRules(ruleID uint32, expressions []string,
 	}
 
 	if err = setRuleIds(relation, items); err != nil {
-
 		return err
 	}
 
 	for _, v := range items {
 		if err := v.Validate(context); err != nil {
-
 			return err
 		}
 	}

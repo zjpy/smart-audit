@@ -31,7 +31,7 @@ func (f *EntityIdentifyValidation) Validate(id contract.ServiceRuleID, args []st
 
 // 调用物体识别预言机服务中的特征提取接口用以返回图片中相应物体的特征值。
 // 这里我们返回一个随机值以模拟该特征值生成过程
-func (f *EntityIdentifyValidation) getEntityFeature(faceRaw string) (rtn []byte, err error) {
+func (f *EntityIdentifyValidation) getEntityFeature(entityRaw string) (rtn []byte, err error) {
 	rtn = make([]byte, mrand.Int31n(1000))
 	if _, err = rand.Read(rtn); err != nil {
 		return
@@ -39,21 +39,21 @@ func (f *EntityIdentifyValidation) getEntityFeature(faceRaw string) (rtn []byte,
 	return
 }
 
-// 调用物体识别预言机服务中的人脸比对接口，并返回包含EntityIdentifyResult中内容的比对结果。
-// 这里我们返回一个人脸评分在0.88~1之间的数值，以模拟在以0.90为界有>80%通过率的情况
+// 调用物体识别预言机服务中的物体比对接口，并返回包含EntityIdentifyResult中内容的比对结果。
+// 这里我们返回一个物体评分在88~100之间的数值，以模拟在以90为界有>80%通过率的情况
 func (f *EntityIdentifyValidation) getEntityCompareResult(entityId string,
 	rtn []byte) service.EntityIdentifyResult {
 	return service.EntityIdentifyResult{
 		Result:   0,
-		Score:    0.88 + float32(mrand.Int31n(12))*0.01,
+		Score:    88 + uint32(mrand.Int31n(12)),
 		Sequence: "XXXXX",
 	}
 }
 
-// 这里对物体识别评分进行评价，评分超过或等于0.90则验证成功，否则视为其他物体
+// 这里对物体识别评分进行评价，评分超过或等于90则验证成功，否则视为其他物体
 func (f *EntityIdentifyValidation) entityCompare(entityId string, rtn []byte) error {
 	result := f.getEntityCompareResult(entityId, rtn)
-	if result.Score < 0.90 {
+	if result.Score < 90 {
 		return errors.New(fmt.Sprintf("不属于类别码为%s类型的物体", entityId))
 	}
 	return nil

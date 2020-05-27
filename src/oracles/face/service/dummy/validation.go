@@ -50,7 +50,7 @@ func (f *FaceValidation) getFaceCompareResult(id string,
 	}
 }
 
-// 这里对人脸比对评分进行评价，评分超过或等于0.95则验证成功，否则视为非本人的情况
+// 这里对人脸比对评分进行评价，评分超过或等于95则验证成功，否则视为非本人的情况
 func (f *FaceValidation) faceCompare(id string, rtn []byte) error {
 	result := f.getFaceCompareResult(id, rtn)
 	if result.Score < 95 {
