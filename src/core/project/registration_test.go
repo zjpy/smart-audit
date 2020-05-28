@@ -4,15 +4,15 @@ import (
 	"core/common"
 	"core/contract"
 	"core/orgnization"
-	rules2 "core/rules"
-	"fmt"
+	"core/rules"
+	"log"
 	"testing"
 )
 
 func TestRegistration_Value(t *testing.T) {
-	testMap := make(map[rules2.RuleType]contract.ServiceRuleID, 0)
-	testMap[rules2.Time] = 123
-	testMap[rules2.Location] = 345
+	testMap := make(map[rules.RuleType]contract.ServiceRuleID, 0)
+	testMap[rules.Time] = 123
+	testMap[rules.Location] = 345
 
 	registration := Registration{
 		AuditeeSpecification: AuditeeSpecification{
@@ -28,7 +28,7 @@ func TestRegistration_Value(t *testing.T) {
 				ID:          2,
 				Description: "it is for test",
 			},
-			Rule: rules2.ValidationRelationship{
+			Rule: rules.ValidationRelationship{
 				Operator: "test",
 				Rules:    testMap,
 				ID:       3,
@@ -40,7 +40,7 @@ func TestRegistration_Value(t *testing.T) {
 	}
 	result, err := registration.Value()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
-	fmt.Println(string(result))
+	log.Println(string(result))
 }

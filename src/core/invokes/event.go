@@ -9,6 +9,7 @@ import (
 	"core/rules"
 	"errors"
 	"fmt"
+	"log"
 	"strconv"
 )
 
@@ -32,7 +33,7 @@ func AddEventMain(args []string, context contract.Context) *contract.Response {
 			registration.Key(), err))
 	}
 
-	fmt.Println("审计事件录入成功, 审计事件ID:", registration.ID)
+	log.Println("审计事件录入成功, 审计事件ID:", registration.ID)
 	return &contract.Response{Payload: registration.ID.Bytes()}
 }
 
@@ -138,7 +139,7 @@ func getQueryEventResult(eventID *common.Uint256,
 		bArrayMemberAlreadyWritten = true
 	}
 	buffer.WriteString(`]}`)
-	fmt.Printf("Query result: %s", buffer.String())
+	log.Printf("Query result: %s", buffer.String())
 
 	return buffer.Bytes(), nil
 }

@@ -5,6 +5,7 @@ import (
 	"core/project"
 	"core/record"
 	"fmt"
+	"log"
 	"strconv"
 )
 
@@ -28,7 +29,7 @@ func RegisterProjectMain(args []string, context contract.Context) *contract.Resp
 			p.Key(), err))
 	}
 
-	fmt.Println("项目录入成功，项目ID：", p.ID)
+	log.Println("项目录入成功，项目ID：", p.ID)
 	return &contract.Response{
 		Payload: []byte(strconv.FormatUint(uint64(p.ID), 32)),
 	}

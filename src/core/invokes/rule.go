@@ -4,6 +4,7 @@ import (
 	"core/contract"
 	rules2 "core/rules"
 	"fmt"
+	"log"
 	"strconv"
 )
 
@@ -11,11 +12,11 @@ import (
 func RegisterRuleMain(args []string, context contract.Context) *contract.Response {
 	ruleID, err := rules2.RegisterRules(args, context)
 	if err != nil {
-		fmt.Println("注册规则失败：", err.Error())
+		log.Println("注册规则失败：", err.Error())
 		return contract.Error(fmt.Sprint("注册规则失败，详细信息：", err))
 	}
 
-	fmt.Println("审计规则录入成功，规则ID：", ruleID)
+	log.Println("审计规则录入成功，规则ID：", ruleID)
 	return &contract.Response{
 		Payload: []byte(strconv.FormatUint(uint64(ruleID), 32)),
 	}

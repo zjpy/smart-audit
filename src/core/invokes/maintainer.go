@@ -5,6 +5,7 @@ import (
 	"core/contract"
 	"core/orgnization"
 	"fmt"
+	"log"
 	"strconv"
 )
 
@@ -35,7 +36,7 @@ func GetMaintainersMain(context contract.Context) *contract.Response {
 		bArrayMemberAlreadyWritten = true
 	}
 	buffer.WriteString(`]}`)
-	fmt.Printf("Query result: %s", buffer.String())
+	log.Printf("Query result: %s", buffer.String())
 
 	return &contract.Response{Payload: buffer.Bytes()}
 }

@@ -5,6 +5,7 @@ import (
 	"core/orgnization"
 	"core/record"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -33,7 +34,7 @@ func InitMain(context contract.Context) *contract.Response {
 			err.Error()))
 	}
 
-	fmt.Println("审计运维人员信息初始化成功")
+	log.Print("审计运维人员信息初始化成功")
 	return &contract.Response{}
 }
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/hyperledger/fabric/protos/peer"
+	"log"
 )
 
 type SmartAudit struct {
@@ -48,6 +49,6 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 func main() {
 	if err := shim.Start(new(SmartAudit)); err != nil {
-		fmt.Printf("智能合约启动出错，详细信息：%s", err)
+		log.Printf("智能合约启动出错，详细信息：%s", err)
 	}
 }
