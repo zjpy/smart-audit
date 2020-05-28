@@ -3,7 +3,7 @@ package invokes
 import (
 	"core/contract"
 	_ "oracles/time/service"
-	dummy2 "oracles/time/service/dummy"
+	"oracles/time/service/dummy"
 	"strconv"
 )
 
@@ -28,5 +28,5 @@ func ValidateMain(args []string) *contract.Response {
 func initValidation() contract.Validation {
 	// fixme 在真实商用环境下替换为完成好的service.TimeValidation
 	//return &service.TimeValidation{}
-	return &dummy2.TimeValidation{}
+	return &dummy.TimeValidation{}
 }
