@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/hex"
 	"errors"
-	"io"
 )
 
 const UINT256SIZE = 32
@@ -39,15 +38,6 @@ func (u Uint256) Bytes() []byte {
 	return x
 }
 
-func (u *Uint256) Serialize(w io.Writer) error {
-	_, err := w.Write(u[:])
-	return err
-}
-
-func (u *Uint256) Deserialize(r io.Reader) error {
-	_, err := io.ReadFull(r, u[:])
-	return err
-}
 
 func Uint256FromBytes(f []byte) (*Uint256, error) {
 	if len(f) != UINT256SIZE {

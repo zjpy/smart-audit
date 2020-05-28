@@ -34,7 +34,7 @@ func AddEventMain(args []string, context contract.Context) *contract.Response {
 	}
 
 	log.Println("审计事件录入成功, 审计事件ID:", registration.ID)
-	return &contract.Response{Payload: registration.ID.Bytes()}
+	return &contract.Response{Payload: []byte("OK")}
 }
 
 func verify(registration *project.Registration, context contract.Context) error {
