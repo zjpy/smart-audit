@@ -21,6 +21,9 @@ type Project struct {
 
 	// 业务相关描述
 	Description string
+
+	// 项目审计当事人及规则
+	AuditeeRulesMap map[string]string
 }
 
 func (p *Project) CountKey() string {

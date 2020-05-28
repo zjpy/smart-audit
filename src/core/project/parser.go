@@ -12,7 +12,7 @@ import (
 )
 
 func FromStrings(args []string, context contract.Context) (*Project, error) {
-	if len(args) < 2 {
+	if len(args) < 4 {
 		return nil, errors.New("参数不足")
 	}
 	count, err := record.GetRecordCount(CountKey, context)
@@ -20,10 +20,33 @@ func FromStrings(args []string, context contract.Context) (*Project, error) {
 		return nil, err
 	}
 
+	auditRulesMap := make(map[string]string, 0)
+	for i := 2; i+1 < len(args); i += 2 {
+		auditeeID, err := strconv.ParseUint(args[i], 10, 32)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("解析审计当事人ID出错，详细信息：%s", err.Error()))
+		}
+		auditee := orgnization.Auditee{Member: &orgnization.Member{ID: uint32(auditeeID)}}
+		auditBytes, err := context.GetState(auditee.Key())
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("不存在审计当事人ID对应的审计当事人"))
+		}
+
+		ruleID, err := strconv.ParseUint(args[i+1], 10, 32)
+		if err != nil {
+			return nil, errors.New(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
+		}
+		rule := rules2.ValidationRelationship{ID: uint32(ruleID)}
+		ruleBytes, err := context.GetState(rule.Key())
+
+		auditRulesMap[string(auditBytes)] = string(ruleBytes)
+	}
+
 	return &Project{
-		ID:          count,
-		Name:        args[0],
-		Description: args[1],
+		ID:              count,
+		Name:            args[0],
+		Description:    args[1],
+		AuditeeRulesMap: auditRulesMap,
 	}, nil
 }
 

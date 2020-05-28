@@ -3,6 +3,7 @@ package contract
 import (
 	"core/contract"
 	"errors"
+
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
