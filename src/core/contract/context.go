@@ -21,7 +21,7 @@ type Context interface {
 	GetStateByRange(startKey, endKey string) (Iterator, error)
 
 	// 调用另一个智能合约，目前默认会在同一个链（或者channel）上部署所有合约
-	InvokeContract(name, function string, args [][]byte) Response
+	InvokeContract(name, function string, args []string) Response
 }
 
 // 抽象一个用户获取存储项的迭代器

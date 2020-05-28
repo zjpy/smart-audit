@@ -94,9 +94,9 @@ func (i *ValidationValue) Validate(context contract.Context) error {
 
 func (i *ValidationValue) validateFromContract(contractName string,
 	context contract.Context) error {
-	args := [][]byte{
-		[]byte(strconv.FormatUint(uint64(i.ID), 32)),
-		[]byte(i.ActualValues),
+	args := []string{
+		strconv.FormatUint(uint64(i.ID), 32),
+		i.ActualValues,
 	}
 
 	if rtn := context.InvokeContract(contractName,

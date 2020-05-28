@@ -3,7 +3,6 @@ package contract
 import (
 	"core/contract"
 	"errors"
-	"fmt"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -41,11 +40,13 @@ func (c *ContextImpl) GetStateByRange(startKey, endKey string) (contract.Iterato
 	return NewIterator(raw), nil
 }
 
-func (c *ContextImpl) InvokeContract(name, function string, args [][]byte) contract.Response {
+func (c *ContextImpl) InvokeContract(name, function string, args []string) contract.Response {
 	fabricArgs := [][]byte{
 		[]byte(function),
 	}
-	fabricArgs = append(fabricArgs, args...)
+	for _, v := range args {
+		fabricArgs = append(fabricArgs, []byte(v))
+	}
 	// 这里channel参数为空则默认会发送到当前合约所在channel上
 	rtn := c.stub.InvokeChaincode(name, fabricArgs, "")
 	response := contract.Response{

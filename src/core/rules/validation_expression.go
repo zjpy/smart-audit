@@ -48,8 +48,8 @@ func (r *ValidationExpression) registerRule(
 
 func (r *ValidationExpression) registerFromContract(contractName string,
 	context contract.Context) (contract.ServiceRuleID, error) {
-	args := [][]byte{
-		[]byte(r.Expression),
+	args := []string{
+		r.Expression,
 	}
 
 	rtn := context.InvokeContract(contractName, contract.RegisterFunctionName, args)
