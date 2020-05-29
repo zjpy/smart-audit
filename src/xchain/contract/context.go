@@ -2,6 +2,7 @@ package contract
 
 import (
 	"core/contract"
+	"github.com/xuperchain/xuperchain/core/common"
 	"github.com/xuperchain/xuperchain/core/contractsdk/go/code"
 	"sort"
 	"strconv"
@@ -24,7 +25,11 @@ func (c *ContextImpl) PutState(key string, value []byte) error {
 }
 
 func (c *ContextImpl) GetState(key string) ([]byte, error) {
-	return c.ctx.GetObject([]byte(key))
+	rtn, err := c.ctx.GetObject([]byte(key))
+	if err == common.ErrKVNotFound {
+		return nil, nil
+	}
+	return rtn, err
 }
 
 func (c *ContextImpl) DeleteState(key string) error {
