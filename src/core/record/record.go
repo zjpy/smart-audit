@@ -20,9 +20,6 @@ func StoreCount(record Record, context contract.Context) error {
 
 func GetRecordCount(key string, context contract.Context) (uint32, error) {
 	countBuf, err := context.GetState(key)
-	if err != nil {
-		return 0, err
-	}
 
 	// 未找到则从0开始
 	if countBuf == nil {
