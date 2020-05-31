@@ -9,6 +9,7 @@ import (
 
 var validation contract.Validation = initValidation()
 
+// 人脸识别规则验证
 func ValidateMain(args []string) *contract.Response {
 	if len(args) == 0 {
 		return contract.Error("缺少规则ID")
@@ -25,6 +26,7 @@ func ValidateMain(args []string) *contract.Response {
 	return &contract.Response{}
 }
 
+// 生成人脸识别规则实例
 func initValidation() contract.Validation {
 	// fixme 在真实商用环境下替换为完成好的service.FaceValidation
 	//return &service.FaceValidation{}

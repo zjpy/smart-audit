@@ -23,6 +23,7 @@ type ValidateArea struct {
 	Radius float64 `json:"radius"`
 }
 
+// 从输入参数获取范围信息验证规则
 func FromStrings(args []string) (*ValidateArea, error) {
 	if len(args) < 3 {
 		return nil, errors.New("参数不足")
@@ -44,6 +45,7 @@ func FromStrings(args []string) (*ValidateArea, error) {
 	}, nil
 }
 
+// 从输入参数获取位置信息
 func PositionFromString(args []string) (*Position, error) {
 	if len(args) < 2 {
 		return nil, errors.New("参数不足")

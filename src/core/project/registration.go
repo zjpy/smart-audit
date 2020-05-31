@@ -7,6 +7,7 @@ import (
 )
 
 const (
+	// 审计事件计数存储Key值后缀
 	RegistrationCountKeySuffix = "_count"
 )
 
@@ -27,23 +28,28 @@ type Registration struct {
 	Index uint32
 }
 
+// 审计事件计数存储Key值
 func (r *Registration) CountKey() string {
 	return r.ID.String() + RegistrationCountKeySuffix
 }
 
+// 获取审计事件计数
 func (r *Registration) GetCount() uint32 {
 	return r.Index + 1
 }
 
+// 验证审计事件合法性
 func (r *Registration) Validate() error {
 	// todo complete me
 	return nil
 }
 
+// 审计事件存储的Key值
 func (r *Registration) Key() string {
 	return r.ID.String() + strconv.FormatUint(uint64(r.Index), 10)
 }
 
+// 审计事件存储的Value值
 func (r *Registration) Value() ([]byte, error) {
 	value, err := json.Marshal(r)
 	if err != nil {

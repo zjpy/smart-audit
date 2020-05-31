@@ -30,6 +30,7 @@ type ServiceRules struct {
 type TimeValidation struct {
 }
 
+// 模拟验证时间是否满足规则要求
 func (t *TimeValidation) Validate(id contract.ServiceRuleID, args []string) error {
 	if len(args) == 0 {
 		return errors.New("不允许没有参数的验证")
@@ -43,6 +44,7 @@ func (t *TimeValidation) Validate(id contract.ServiceRuleID, args []string) erro
 	return t.dummyServiceValidate(value)
 }
 
+// 验证时间，需要时间在时间规则的开始时间及结束时间之间，否则返回错误
 func (t TimeValidation) dummyServiceValidate(value time.Time) error {
 	startTime := t.getTimeFromRuleParams(fixServiceValidationRule.Rules[0].Params)
 	endTime :=  t.getTimeFromRuleParams(fixServiceValidationRule.Rules[1].Params)
@@ -53,6 +55,7 @@ func (t TimeValidation) dummyServiceValidate(value time.Time) error {
 	return nil
 }
 
+// 从输入参数获取时间
 func (t *TimeValidation) getTimeFromRuleParams(params []string) time.Time {
 	hour, _ := strconv.ParseInt(params[0], 10, 32)
 	now := time.Now()

@@ -12,6 +12,7 @@ import (
 type EntityIdentifyValidation struct {
 }
 
+// 模拟物体识别规则验证
 func (f *EntityIdentifyValidation) Validate(id contract.ServiceRuleID, args []string) error {
 	if len(args) == 0 {
 		return errors.New("不允许没有参数的验证")

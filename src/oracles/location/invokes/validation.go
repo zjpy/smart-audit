@@ -9,6 +9,7 @@ import (
 
 var validation contract.Validation = initValidation()
 
+// 验证位置规则
 func ValidateMain(args []string) *contract.Response {
 	if len(args) == 0 {
 		return contract.Error("缺少规则ID")
@@ -25,6 +26,7 @@ func ValidateMain(args []string) *contract.Response {
 	return &contract.Response{}
 }
 
+// 生成位置服务实例
 func initValidation() contract.Validation {
 	// fixme 在真实商用环境下替换为完成好的service.LocationValidation
 	//return &service.LocationValidation{}

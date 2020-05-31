@@ -7,32 +7,39 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
+// 将ChaincodeStubInterface封装一层，添加统一的数据库使用等方法接口，以支持不同链的调用
 type ContextImpl struct {
 	stub shim.ChaincodeStubInterface
 }
 
+// 获取输入参数中的方法名，参数中第一个字段为方法名
 func (c *ContextImpl) GetFunctionName() string {
 	fn, _ := c.stub.GetFunctionAndParameters()
 	return fn
 }
 
+// 获取输入参数列表
 func (c *ContextImpl) GetArgs() []string {
 	_, args := c.stub.GetFunctionAndParameters()
 	return args
 }
 
+// 存储数据
 func (c *ContextImpl) PutState(key string, value []byte) error {
 	return c.stub.PutState(key, value)
 }
 
+// 根据Key值查询之前存储的value值
 func (c *ContextImpl) GetState(key string) ([]byte, error) {
 	return c.stub.GetState(key)
 }
 
+// 删除Key值对应记录
 func (c *ContextImpl) DeleteState(key string) error {
 	return c.stub.DelState(key)
 }
 
+// 根据起始Key值及结束Key值，查询所有满足条件的值，返回迭代器
 func (c *ContextImpl) GetStateByRange(startKey, endKey string) (contract.Iterator, error) {
 	raw, err := c.stub.GetStateByRange(startKey, endKey)
 	if err != nil {
@@ -41,6 +48,7 @@ func (c *ContextImpl) GetStateByRange(startKey, endKey string) (contract.Iterato
 	return NewIterator(raw), nil
 }
 
+// 根绝合约名、方法名及输入参数调用合约
 func (c *ContextImpl) InvokeContract(name, function string, args []string) contract.Response {
 	fabricArgs := [][]byte{
 		[]byte(function),
@@ -59,6 +67,7 @@ func (c *ContextImpl) InvokeContract(name, function string, args []string) contr
 	return response
 }
 
+// 生成ContextImpl实例
 func NewContext(stub shim.ChaincodeStubInterface) *ContextImpl {
 	return &ContextImpl{
 		stub: stub,

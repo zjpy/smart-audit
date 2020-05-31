@@ -11,6 +11,7 @@ type Response struct {
 	Payload []byte
 }
 
+// 将Error转换为Response
 func Error(msg string) *Response {
 	return &Response{
 		Err:     errors.New(msg),

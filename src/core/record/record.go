@@ -7,17 +7,20 @@ import (
 
 // 用于抽象记录的存储操作
 type Record interface {
+	// 获取记录数量存储所用Key值
 	CountKey() string
 
 	// 获取记录数量
 	GetCount() uint32
 }
 
+// 存储记录数量
 func StoreCount(record Record, context contract.Context) error {
 	return context.PutState(record.CountKey(), []byte(strconv.FormatUint(uint64(
 		record.GetCount()), 10)))
 }
 
+// 获取当前记录数量
 func GetRecordCount(key string, context contract.Context) (uint32, error) {
 	countBuf, err := context.GetState(key)
 

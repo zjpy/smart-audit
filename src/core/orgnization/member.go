@@ -16,15 +16,18 @@ type Member struct {
 	ID uint32
 }
 
+// 成员验证
 func (m *Member) Validate() error {
 	// todo complete me
 	return nil
 }
 
+// 成员存储Key值
 func (m *Member) Key() string {
 	return strconv.FormatUint(uint64(m.ID), 10)
 }
 
+// 成员存储Value值，采用json格式存储
 func (m *Member) Value() ([]byte, error) {
 	value, err := json.Marshal(m)
 	if err != nil {
@@ -34,6 +37,7 @@ func (m *Member) Value() ([]byte, error) {
 	return value, nil
 }
 
+// 从输入参数获取成员信息
 func MemberFromString(args []string,
 	context contract.Context) (mem *Member, err error) {
 	if len(args) < 1 {

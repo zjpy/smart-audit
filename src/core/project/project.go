@@ -7,7 +7,9 @@ import (
 )
 
 const (
+	// 项目存储Key值前缀
 	Prefix   = "project-"
+	// 项目计数存储Key值前缀
 	CountKey = "project-count"
 )
 
@@ -26,23 +28,28 @@ type Project struct {
 	AuditeeRulesMap map[string]string
 }
 
+// 项目存储计数的Key值
 func (p *Project) CountKey() string {
 	return CountKey
 }
 
+// 获取项目存储计数
 func (p *Project) GetCount() uint32 {
 	return p.ID + 1
 }
 
+// 验证项目合法性
 func (p *Project) Validate() error {
 	// todo complete me
 	return nil
 }
 
+// 项目存储Key值
 func (p *Project) Key() string {
 	return Prefix + strconv.FormatUint(uint64(p.ID), 10)
 }
 
+// 项目存储Value值
 func (p *Project) Value() ([]byte, error) {
 	value, err := json.Marshal(p)
 	if err != nil {

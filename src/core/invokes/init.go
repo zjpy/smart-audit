@@ -14,6 +14,7 @@ const (
 	maintainerSplitter = ","
 )
 
+// 初始化审计合约
 func InitMain(context contract.Context) *contract.Response {
 	maintainers, err := parseMaintainers(context.GetArgs(), context)
 	if err != nil {
@@ -38,6 +39,7 @@ func InitMain(context contract.Context) *contract.Response {
 	return &contract.Response{}
 }
 
+// 从输入参数中解析包括哪些审计维护人员
 func parseMaintainers(args []string, context contract.Context) (
 	[]*orgnization.Maintainer, error) {
 	var result []*orgnization.Maintainer
@@ -52,6 +54,7 @@ func parseMaintainers(args []string, context contract.Context) (
 	return result, nil
 }
 
+// 从输入参数中解析单个审计维护人员
 func parseSingleMaintainer(arg string, index uint32, context contract.Context) (
 	*orgnization.Maintainer, error) {
 	subArgs := strings.Split(arg, maintainerSplitter)

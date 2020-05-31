@@ -11,6 +11,7 @@ import (
 type FaceValidation struct {
 }
 
+// 模拟人脸识别规则验证
 func (f *FaceValidation) Validate(id contract.ServiceRuleID, args []string) error {
 	if len(args) == 0 {
 		return errors.New("缺少人脸数据")

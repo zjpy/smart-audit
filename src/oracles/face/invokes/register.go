@@ -9,6 +9,7 @@ import (
 
 var registration contract.Registration = initRegistration()
 
+// 注册人脸识别规则
 func RegisterMain(args []string, context contract.Context) *contract.Response {
 	id, err := registration.Register(args)
 	if err != nil {
@@ -20,6 +21,7 @@ func RegisterMain(args []string, context contract.Context) *contract.Response {
 	}
 }
 
+// 生成人脸识别实例
 func initRegistration() contract.Registration {
 	// fixme 在真实商用环境下替换为完成好的service.FaceRegistration
 	//return &service.FaceRegistration{}

@@ -9,6 +9,7 @@ import (
 
 var validation contract.Validation = initValidation()
 
+// 验证时间是否满足规则
 func ValidateMain(args []string) *contract.Response {
 	if len(args) == 0 {
 		return contract.Error("缺少规则ID")
@@ -25,6 +26,7 @@ func ValidateMain(args []string) *contract.Response {
 	return &contract.Response{}
 }
 
+// 调用预言机验证时间是否满足规则
 func initValidation() contract.Validation {
 	// fixme 在真实商用环境下替换为完成好的service.TimeValidation
 	//return &service.TimeValidation{}

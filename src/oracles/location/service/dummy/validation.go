@@ -32,6 +32,7 @@ type ServiceRules struct {
 type LocationValidation struct {
 }
 
+// 模拟验证位置规则
 func (t *LocationValidation) Validate(id contract.ServiceRuleID, args []string) error {
 	if len(args) < 1 {
 		return errors.New("地理位置解析需要的参数不足")

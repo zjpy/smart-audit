@@ -11,6 +11,7 @@ import (
 	"strconv"
 )
 
+// 从输入参数获取项目信息
 func FromStrings(args []string, context contract.Context) (*Project, error) {
 	if len(args) < 4 {
 		return nil, errors.New("参数不足")
@@ -50,6 +51,7 @@ func FromStrings(args []string, context contract.Context) (*Project, error) {
 	}, nil
 }
 
+// 从输入参数获取审计事件信息
 func RegistrationFromString(args []string,
 	context contract.Context) (*Registration, error) {
 	if len(args) < 4 {
@@ -124,6 +126,7 @@ func GetEventID(auditeeID, projectID, ruleID uint32) common.Uint256 {
 	return eventID
 }
 
+// 获取当前存储的审计事件计数
 func GetRegistrationCountKey(specID common.Uint256) string {
 	return specID.String() + RegistrationCountKeySuffix
 }

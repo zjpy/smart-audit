@@ -6,6 +6,7 @@ import (
 	"github.com/hyperledger/fabric/protos/peer"
 )
 
+// 将contract.Response转换为peer.Response
 func Response(res *contract.Response) peer.Response {
 	if res.Err != nil {
 		return shim.Error(res.Err.Error())

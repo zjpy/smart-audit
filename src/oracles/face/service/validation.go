@@ -20,6 +20,7 @@ type FaceCompareResult struct {
 type FaceValidation struct {
 }
 
+// 人脸识别规则验证
 func (f *FaceValidation) Validate(id contract.ServiceRuleID, args []string) error {
 	if len(args) < 1 {
 		return errors.New("验证规则所需参数不足")
@@ -28,6 +29,7 @@ func (f *FaceValidation) Validate(id contract.ServiceRuleID, args []string) erro
 	return f.serviceValidate(id, args[0])
 }
 
+// 调用预言机验证人脸是否满足规则
 func (f *FaceValidation) serviceValidate(id contract.ServiceRuleID,
 	valueExpression string) error {
 	// fixme 实际商用时实现人脸识别预言机，然后在这里调用预言机服务

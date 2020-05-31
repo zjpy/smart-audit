@@ -13,16 +13,18 @@ import (
 	"strconv"
 )
 
+// 添加审计事件
 func AddEventMain(args []string, context contract.Context) *contract.Response {
+	// 解析审计事件输入参数
 	registration, err := project.RegistrationFromString(args, context)
 	if err != nil {
 		return contract.Error(fmt.Sprint("合规事件登录失败，详细信息：", err))
 	}
-
+	// 验证审计事件是否合规
 	if err = verify(registration, context); err != nil {
 		return contract.Error(fmt.Sprint("合规事件数据验证失败，详细信息：", err))
 	}
-
+	// 存储审计事件
 	if err = record.StoreItem(registration, context); err != nil {
 		return contract.Error(fmt.Sprintf("合规事件%s存储失败，详细信息：%s",
 			registration.Key(), err))
@@ -32,7 +34,6 @@ func AddEventMain(args []string, context contract.Context) *contract.Response {
 		return contract.Error(fmt.Sprintf("合规事件%s相应的索引值存储失败，详细信息：%s",
 			registration.Key(), err))
 	}
-
 	log.Println("审计事件录入成功, 审计事件ID:", registration.ID)
 	return &contract.Response{Payload: []byte("OK")}
 }
