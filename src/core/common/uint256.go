@@ -1,10 +1,5 @@
 package common
 
-import (
-	"encoding/hex"
-	"errors"
-)
-
 // 定义Uint256字节数
 const UINT256SIZE = 32
 
