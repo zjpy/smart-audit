@@ -8,6 +8,7 @@ import (
 	"strconv"
 )
 
+// 验证规则结构, 用于定义在某一个预言机相关智能合约做具体验证的验证规则子项
 type ValidationValue struct {
 	// 规则类型
 	Type RuleType
@@ -19,6 +20,7 @@ type ValidationValue struct {
 	ID contract.ServiceRuleID
 }
 
+// 验证一个规则表达式，验证时会解析出逻辑操作符以及每个验证规则子项，视情况具体验证
 func ValidateRules(relationID uint32, expressions []string,
 	context contract.Context) error {
 
@@ -43,12 +45,55 @@ func ValidateRules(relationID uint32, expressions []string,
 		return err
 	}
 
+	// 根据逻辑操作符验证规则项
+	switch relation.Operator {
+	case contract.NONE:
+		return nil
+	case contract.AND:
+		return validateAnd(items, context)
+	case contract.OR:
+		return validateOr(items, context)
+	case contract.NOT:
+		return validateNot(items, context)
+	default:
+		return errors.New("未找到有效地关系表达式操作符")
+	}
+}
+
+// 当逻辑操作符为AND时，验证规则中包含的所有规则子项
+func validateAnd(items []*ValidationValue, context contract.Context) error {
 	for _, v := range items {
 		if err := v.Validate(context); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+// 当逻辑操作符为OR时，验证规则中包含的所有规则子项
+func validateOr(items []*ValidationValue, context contract.Context) (
+	lastErr error) {
+	for _, v := range items {
+		if err := v.Validate(context); err != nil {
+			lastErr = err
+		} else {
+			return nil
+		}
+	}
+	return
+}
+
+// 当逻辑操作符为NOT时，验证规则子项中的第一个值如果验证不通过则说明整个规则验证通过
+func validateNot(items []*ValidationValue, context contract.Context) error {
+	if len(items) == 0 {
+		return errors.New("缺少规则验证项")
+	}
+
+	if err := items[0].Validate(context); err != nil {
+		return nil
+	} else {
+		return errors.New("验证项不存在预期的错误")
+	}
 }
 
 func setRuleIds(relation *ValidationRelationship, items []*ValidationValue) error {
@@ -81,6 +126,7 @@ func parseRuleValues(expressions []string) ([]*ValidationValue, error) {
 	return results, nil
 }
 
+// 一个规则子项的验证逻辑，根据规则类型执行实际的调用逻辑
 func (i *ValidationValue) Validate(context contract.Context) error {
 	switch i.Type {
 	case None:
@@ -92,6 +138,7 @@ func (i *ValidationValue) Validate(context contract.Context) error {
 	}
 }
 
+// 实际调用预言机相关的智能合约以执行规则验证
 func (i *ValidationValue) validateFromContract(contractName string,
 	context contract.Context) error {
 	args := []string{
