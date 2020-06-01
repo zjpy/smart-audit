@@ -2,9 +2,9 @@
 
 ### 系统环境准备
 
-需要实现准备如下环境：
+目前测试环境为：
 
-- Ubuntu： 16.04、18.04、20.04  (注意XuperChain在MacOSX环境测试未通过，包括MacOSX上的docker)
+- Ubuntu： 18.04、20.04  (注意XuperChain在MacOSX环境测试未通过，包括MacOSX上的docker)
 - GCC：4.9+
 - Golang：1.13.x （注意目前最新版本的1.14测试尚未支持）
 
