@@ -1,6 +1,8 @@
 package contract
 
-import "github.com/hyperledger/fabric/core/chaincode/shim"
+import (
+	"github.com/hyperledger/fabric/core/chaincode/shim"
+)
 
 // 通过封装Fabric内部的迭代器，提供统一的查询方法以支持不同链的调用
 type IteratorImpl struct {
@@ -14,7 +16,11 @@ func (i *IteratorImpl) HasNext() bool {
 
 // 获取下一个查询结果
 func (i *IteratorImpl) Next() (key string, value []byte, err error) {
-	return i.Next()
+	kv, err := i.raw.Next()
+	if err != nil {
+		return "", nil, err
+	}
+	return kv.Key, kv.Value, nil
 }
 
 // 关闭迭代器

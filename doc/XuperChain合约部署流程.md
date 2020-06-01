@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## 环境准备
 
 ### 系统环境准备
@@ -672,7 +673,7 @@
    可以看到如下响应结果：
 
    ```shell
-   contract response: {"Operator":"AND","Rules":{"1":0,"2":0,"3":0,"4":0},"ID":0}
+   contract response: {"Operator":"AND","Rules":{"FaceRecognize":0,"Location":0,"ObjectRecognize":0,"Time":0},"ID":0}"
    The gas you cousume is: 101186
    You need add fee
    ```
@@ -741,7 +742,7 @@
    可以看到如下响应结果：
 
    ```shell
-   contract response: {"Name":"POS Audit","ID":0,"Description":"This is a bank project, used by bank employees to check if they did check the POS related bussiness themselfs within the specified time and location"}
+   contract response: {"Name":"POS Audit","ID":0,"Description":"This is a bank project, used by bank employees to check if they did check the POS related bussiness themselfs within the specified time and location","AuditeeRulesMap":{"{"Name":"ZhanSan","ID":0}":"{"Operator":"AND","Rules":{"FaceRecognize":0,"Location":0,"ObjectRecognize":0,"Time":0},"ID":0}"}}
    The gas you cousume is: 101858
    You need add fee
    ```
