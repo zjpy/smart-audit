@@ -10,6 +10,7 @@ import (
 	"oracles/identify/invokes"
 )
 
+// 用于处理与物体识别预言机交互的智能合约
 type IdentifyService struct {
 }
 

@@ -7,9 +7,11 @@ import (
 	"xchain/contract"
 )
 
+// XuperChain平台上的审计业务智能合约实现
 type SmartAudit struct {
 }
 
+// 审计合约初始化
 func (s *SmartAudit) Initialize(ctx code.Context) code.Response {
 	context := contract.NewContext(ctx)
 	res := invokes.InitMain(context)
@@ -78,6 +80,7 @@ func (s *SmartAudit) QueryEvents(ctx code.Context) code.Response {
 	return contract.Response(invokes.QueryEventsMain(args, context))
 }
 
+// 审计合约主程序入口
 func main() {
 	driver.Serve(new(SmartAudit))
 }

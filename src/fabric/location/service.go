@@ -10,6 +10,7 @@ import (
 	"oracles/location/invokes"
 )
 
+// 用于处理与定位服务预言机交互的智能合约
 type LocationService struct {
 }
 

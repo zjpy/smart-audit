@@ -9,6 +9,7 @@ import (
 	"log"
 )
 
+// Fabric平台上的审计业务智能合约实现
 type SmartAudit struct {
 }
 

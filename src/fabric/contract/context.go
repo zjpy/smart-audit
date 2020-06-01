@@ -7,7 +7,7 @@ import (
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-// 将ChaincodeStubInterface封装一层，添加统一的数据库使用等方法接口，以支持不同链的调用
+// 将Fabric平台上下文封装，并实现统一的数据库使用等方法接口，以支持不同链的调用
 type ContextImpl struct {
 	stub shim.ChaincodeStubInterface
 }
@@ -48,7 +48,7 @@ func (c *ContextImpl) GetStateByRange(startKey, endKey string) (contract.Iterato
 	return NewIterator(raw), nil
 }
 
-// 根绝合约名、方法名及输入参数调用合约
+// 根据合约名、方法名及输入参数调用合约
 func (c *ContextImpl) InvokeContract(name, function string, args []string) contract.Response {
 	fabricArgs := [][]byte{
 		[]byte(function),

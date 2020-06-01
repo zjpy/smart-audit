@@ -10,6 +10,7 @@ import (
 	"oracles/time/invokes"
 )
 
+// 用于处理与时间服务预言机交互的智能合约
 type TimeService struct {
 }
 

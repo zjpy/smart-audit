@@ -2,7 +2,7 @@ package contract
 
 import "github.com/hyperledger/fabric/core/chaincode/shim"
 
-// 将StateQueryIteratorInterface封装一层，提供统一的查询方法以支持不同链的调用
+// 通过封装Fabric内部的迭代器，提供统一的查询方法以支持不同链的调用
 type IteratorImpl struct {
 	raw shim.StateQueryIteratorInterface
 }

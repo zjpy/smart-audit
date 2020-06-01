@@ -7,9 +7,11 @@ import (
 	"xchain/contract"
 )
 
+// 用于处理与人脸识别预言机交互的智能合约
 type FaceService struct {
 }
 
+// 人脸识别合约初始化
 func (s *FaceService) Initialize(ctx code.Context) code.Response {
 	// 初始化人脸识别预言机服务相关信息……
 	return code.OK(nil)
@@ -29,6 +31,7 @@ func (s *FaceService) Validation(ctx code.Context) code.Response {
 	return contract.Response(invokes.ValidateMain(args))
 }
 
+// 人脸识别主程序入口
 func main() {
 	driver.Serve(new(FaceService))
 }

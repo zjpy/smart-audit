@@ -7,9 +7,11 @@ import (
 	"xchain/contract"
 )
 
+// 用于处理与定位服务预言机交互的智能合约
 type LocationService struct {
 }
 
+// 定位服务合约初始化
 func (s *LocationService) Initialize(ctx code.Context) code.Response {
 	// 初始化定位预言机服务相关信息……
 	return code.OK(nil)
@@ -29,6 +31,7 @@ func (s *LocationService) Validation(ctx code.Context) code.Response {
 	return contract.Response(invokes.ValidateMain(args))
 }
 
+// 定位服务主程序入口
 func main() {
 	driver.Serve(new(LocationService))
 }

@@ -10,6 +10,7 @@ import (
 	"oracles/face/invokes"
 )
 
+// 用于处理与人脸识别预言机交互的智能合约
 type FaceService struct {
 }
 
