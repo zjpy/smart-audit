@@ -177,7 +177,7 @@ contract Rules {
         } else if (t == RuleType.Location) {
             service = IService(locationContract);
         } else {
-            require(false, "编码类型尚未支持");
+            revert("编码类型尚未支持");
         }
 
         string[] memory args = new string[](1);
@@ -283,7 +283,7 @@ contract Rules {
         } else if (t == RuleType.Location) {
             service = IService(locationContract);
         } else {
-            require(false, "编码类型尚未支持");
+            revert("编码类型尚未支持");
         }
 
         string[] memory args = new string[](1);

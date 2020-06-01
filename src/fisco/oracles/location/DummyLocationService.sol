@@ -31,7 +31,7 @@ contract DummyLocationService is IService {
         //    的范围，而是简单让90%的情况通过验证
         nonce++;
         if (nonce % 10 >= 9) {
-            require(false, "地理位置超出正常工作范围");
+            revert("地理位置超出正常工作范围");
         }
     }
 }

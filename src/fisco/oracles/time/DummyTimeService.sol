@@ -31,7 +31,7 @@ contract DummyTimeService is IService {
         //    的时间范围，而是简单让90%的情况通过验证
         nonce++;
         if (nonce % 10 >= 9) {
-            require(false, "时间超出正常工作范围");
+            revert("时间超出正常工作范围");
         }
     }
 }
