@@ -29,6 +29,7 @@ contract DummyLocationService is IService {
     function validate(uint32 ruleID, string[] args) public {
         // 由于在solidity语言中不支持浮点数，这里不再模拟真实的地理坐标是否落入给定
         //    的范围，而是简单让90%的情况通过验证
+        nonce++;
         if (nonce % 10 >= 9) {
             require(false, "地理位置超出正常工作范围");
         }

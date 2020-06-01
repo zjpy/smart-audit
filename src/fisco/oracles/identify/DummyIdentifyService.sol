@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
 import "./interface/IService.sol";
-import "./Result.sol";
+import "./IdentifyResult.sol";
 
 
 // 该智能合约用于模拟物体识别的预言机服务调用
@@ -27,7 +27,7 @@ contract DummyIdentifyService is IService {
     /// @param ruleID 返回在预言机服务中注册后对应的规则ID
     /// @param args 验证规则所需的值，以数组形式表示.
     function validate(uint32 ruleID, string[] args) public {
-        require(args.length > 0, "缺少人脸数据");
+        require(args.length > 0, "缺少需要识别物体的数据");
 
         // 与人脸识别类似，云从科技的物体识别服务支持base64编码的图片以及由图片生成的特征码。
         //	一个典型的特征码如下所示（注意特征码内容量较大，这里只列出了首尾部分，中间以...形式省略）：
@@ -41,7 +41,7 @@ contract DummyIdentifyService is IService {
 
     /// @dev 调用物体识别预言机服务中的特征提取接口用以返回图片中相应物体的特征值。
     /// @param faceRaw 返回在预言机服务中注册后对应的规则ID
-    /// @return rtn 特征人脸图像的特征值.
+    /// @return rtn 物体图像的特征值.
     function getEntityFeature(string memory faceRaw)
         private
         returns (bytes memory rtn)
@@ -56,18 +56,18 @@ contract DummyIdentifyService is IService {
     /// @param ruleID 返回在预言机服务中注册后对应的规则ID
     /// @param feature 物体图像的特征值
     function entityCompare(string ruleID, bytes memory feature) private {
-        Result.IdentifyCompare memory result = getEntityCompareResult(
+        IdentifyResult.IdentifyCompare memory result = getEntityCompareResult(
             ruleID,
             feature
         );
-        require(result.Score >= 90, "非本人操作");
+        require(result.Score >= 90, "未识别到指定物体");
     }
 
     /// @dev 调用物体识别预言机服务中的物体比对接口，并返回包含EntityIdentifyResult中内容的比对结果。
     ///        这里我们返回一个物体评分在88~100之间的数值，以模拟在以90为界有>80%通过率的情况
     function getEntityCompareResult(string ruleID, bytes memory feature)
         private
-        returns (Result.IdentifyCompare memory rtn)
+        returns (IdentifyResult.IdentifyCompare memory rtn)
     {
         rtn.Result = 0;
         rtn.Score = 88 + random(12);

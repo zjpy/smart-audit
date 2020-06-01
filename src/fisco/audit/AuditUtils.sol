@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 
-library Utils {
+library AuditUtils {
     /// @dev 比较两个字符串是否相等.
     /// @param a 第一个字符串.
     /// @param b 第二个字符串.

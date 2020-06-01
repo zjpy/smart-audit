@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 
-library Result {
+library IdentifyResult {
     // 调用预言机服务的人脸比对接口返回的结果
     struct IdentifyCompare {
         // 人脸比对结果，0表示请求成功，非0会有响应的错误码意义

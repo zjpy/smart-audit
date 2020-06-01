@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
 import "./interface/IService.sol";
-import "./Result.sol";
+import "./FaceResult.sol";
 
 
 // 该智能合约用于模拟人脸识别的预言机服务调用
@@ -59,7 +59,7 @@ contract DummyFaceService is IService {
     /// @return errorCode 错误码，如果为0则表示没有错误，否则发生注册错误.
     /// @return message 返回结果信息.
     function faceCompare(string ruleID, bytes memory feature) private {
-        Result.FaceCompare memory result = getFaceCompareResult(
+        FaceResult.FaceCompare memory result = getFaceCompareResult(
             ruleID,
             feature
         );
@@ -70,7 +70,7 @@ contract DummyFaceService is IService {
     ///        这里我们返回一个人脸评分在93~100之间的数值，以模拟在以95为界有>80%通过率的情况
     function getFaceCompareResult(string ruleID, bytes memory feature)
         private
-        returns (Result.FaceCompare memory rtn)
+        returns (FaceResult.FaceCompare memory rtn)
     {
         rtn.Result = 0;
         rtn.Score = 93 + random(7);

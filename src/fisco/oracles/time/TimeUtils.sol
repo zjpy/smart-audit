@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 
-library Utils {
+library TimeUtils {
     /// @dev 将一个字符串转换为uint256类型的整型数值.
     /// @param s 字符串.
     /// @return result 返回uint256类型的整型数值

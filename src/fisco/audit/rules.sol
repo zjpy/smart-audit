@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
 import "./interface/IService.sol";
-import "./Utils.sol";
+import "./AuditUtils.sol";
 
 
 // 规则抽象合约，封装规则注册以及验证相关的逻辑
@@ -211,11 +211,11 @@ contract Rules {
         pure
         returns (LogicOperator op)
     {
-        if (Utils.compareStrings(word, "AND")) {
+        if (AuditUtils.compareStrings(word, "AND")) {
             return LogicOperator.AND;
-        } else if (Utils.compareStrings(word, "OR")) {
+        } else if (AuditUtils.compareStrings(word, "OR")) {
             return LogicOperator.OR;
-        } else if (Utils.compareStrings(word, "NOT")) {
+        } else if (AuditUtils.compareStrings(word, "NOT")) {
             return LogicOperator.NOT;
         } else {
             return LogicOperator.NONE;
@@ -230,13 +230,13 @@ contract Rules {
         pure
         returns (RuleType t)
     {
-        if (Utils.compareStrings(word, "Time")) {
+        if (AuditUtils.compareStrings(word, "Time")) {
             return RuleType.Time;
-        } else if (Utils.compareStrings(word, "Location")) {
+        } else if (AuditUtils.compareStrings(word, "Location")) {
             return RuleType.Location;
-        } else if (Utils.compareStrings(word, "FaceRecognize")) {
+        } else if (AuditUtils.compareStrings(word, "FaceRecognize")) {
             return RuleType.FaceRecognize;
-        } else if (Utils.compareStrings(word, "ObjectRecognize")) {
+        } else if (AuditUtils.compareStrings(word, "ObjectRecognize")) {
             return RuleType.ObjectRecognize;
         } else {
             return RuleType.None;
