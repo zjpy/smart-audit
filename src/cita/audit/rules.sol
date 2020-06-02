@@ -187,15 +187,19 @@ contract Rules {
     /// @return valueList 规则验证值列表.
     function parseRuleValues(string[] expressions)
         internal
-        returns (ValidationValue[] storage valueList)
+        returns (ValidationValue[] memory valueList)
     {
+        valueList = new ValidationValue[](expressions.length / 2);
+        uint32 index = 0;
         for (uint32 i = 0; i + 1 < expressions.length; i += 2) {
             RuleType t = getRuleType(expressions[i]);
             require(t != RuleType.None, "未找到规则");
 
-            valueList.push(
-                ValidationValue({Type: t, ActualValues: expressions[i + 1]})
-            );
+            valueList[index] = ValidationValue({
+                Type: t,
+                ActualValues: expressions[i + 1]
+            });
+            index++;
         }
         return valueList;
     }
