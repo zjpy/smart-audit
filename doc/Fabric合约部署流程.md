@@ -1,13 +1,13 @@
-##环境准备
+## 环境准备
 
-###系统环境准备
+### 系统环境准备
 
 需要事先准备如下环境：
 
 - Ubuntu 16.04 / MacOS 10.15 
 - Golang：1.13.x
 
-###启动链
+### 启动链
 
 为了简化fabric链的运行，这里是基于fabric-samples v1.4.0里链启动方式来进行部署
 
@@ -27,14 +27,13 @@ git checkout v1.4.0
 
 在chaincode及cli里添加如下environment以及volumes：
 
-```yaml
+```shell
 environment:
-		CORE_PEER_ADDRESSAUTODETECT=true
-
+    CORE_PEER_ADDRESSAUTODETECT=true
 volumes:
-		- ./../chaincode/smart_audit/fabric:/opt/gopath/src/fabric
-		- ./../chaincode/smart_audit/core:/opt/gopath/src/core
-		- ./../chaincode/smart_audit/oracles:/opt/gopath/src/oracles
+    - ./../chaincode/smart_audit/fabric:/opt/gopath/src/fabric
+    - ./../chaincode/smart_audit/core:/opt/gopath/src/core
+    - ./../chaincode/smart_audit/oracles:/opt/gopath/src/oracles
 ```
 
 指定yaml文件中所有image的版本信息为fabric1.4
@@ -72,7 +71,7 @@ docker-compose -f docker-compose-simple.yaml up
 
 ### 部署合约
 
-####部署时间合约
+#### 部署时间合约
 
 1.通过如下命令初始化时间服务合约
 
@@ -96,7 +95,7 @@ docker exec cli peer chaincode instantiate -n Time -v 0 -c '{"Args":[]}' -C myc
 
 
 
-####启动位置合约
+#### 启动位置合约
 
 1.通过如下命令初始化位置服务合约
 
@@ -120,7 +119,7 @@ docker exec cli peer chaincode instantiate -n Location -v 0 -c '{"Args":[]}' -C 
 
 
 
-####启动人脸识别合约
+#### 启动人脸识别合约
 
 1.通过如下命令初始化人脸识别服务合约
 
@@ -144,7 +143,7 @@ docker exec cli peer chaincode instantiate -n FaceRecognize -v 0 -c '{"Args":[]}
 
 
 
-####启动物体识别合约
+#### 启动物体识别合约
 
 1.通过如下命令初始化物体识别服务合约
 
@@ -168,7 +167,7 @@ docker exec cli peer chaincode instantiate -n ObjectRecognize -v 0 -c '{"Args":[
 
 
 
-####启动审计业务合约
+#### 启动审计业务合约
 
 1.通过如下命令初始化审计业务合约
 
@@ -194,7 +193,7 @@ docker exec cli peer chaincode instantiate -n audit -v 0 -c '{"Args":["init","ma
 
 ### 调用合约
 
-####合约维护人员查询
+#### 合约维护人员查询
 
 1.通过如下命令查询合约维护人员初始化是否成功：
 
@@ -212,7 +211,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"result\":[{\"Name\":
 
 
 
-####录入审计当事人
+#### 录入审计当事人
 
 1.通过如下命令录入一个审计当事人
 
@@ -242,7 +241,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"Name\":\"ZhanSan\",\
 
 
 
-####录入规则
+#### 录入规则
 
 1.通过如下命令录入一个审计规则：
 
@@ -272,7 +271,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"Operator\":\"AND\",\
 
 
 
-####录入项目
+#### 录入项目
 
 1.通过如下命令录入一个项目：
 
@@ -302,7 +301,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"Name\":\"POS Audit\"
 
 
 
-####新增审计事件
+#### 新增审计事件
 
 1.通过如下命令新增一个审计事件
 
@@ -332,7 +331,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"result\":[{\"ID\":[0
 
 
 
-###快速启动所有合约
+### 快速启动所有合约
 
 在启动链后，可以用以下命令直接复制在terminal里执行，就能完成合约的部署。
 
