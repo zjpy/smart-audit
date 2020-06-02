@@ -5,7 +5,7 @@ import (
 	"core/contract"
 	"core/orgnization"
 	"core/record"
-	rules2 "core/rules"
+	"core/rules"
 	"errors"
 	"fmt"
 	"strconv"
@@ -37,7 +37,7 @@ func FromStrings(args []string, context contract.Context) (*Project, error) {
 		if err != nil {
 			return nil, errors.New(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
 		}
-		rule := rules2.ValidationRelationship{ID: uint32(ruleID)}
+		rule := rules.ValidationRelationship{ID: uint32(ruleID)}
 		ruleBytes, err := context.GetState(rule.Key())
 
 		auditRulesMap[string(auditBytes)] = string(ruleBytes)
@@ -93,8 +93,8 @@ func RegistrationFromString(args []string,
 	registration.Auditee = orgnization.Auditee{
 		Member: &orgnization.Member{ID: uint32(auditeeID)}}
 	registration.Project = Project{ID: uint32(projectID)}
-	registration.Rule = rules2.ValidationRelationship{
-		Rules: make(map[rules2.RuleType]contract.ServiceRuleID, 0),
+	registration.Rule = rules.ValidationRelationship{
+		Rules: make(map[rules.RuleType]contract.ServiceRuleID, 0),
 		ID:    uint32(ruleID)}
 
 	// 构建用于规则验证的参数
