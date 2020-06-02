@@ -67,9 +67,9 @@ contract Rules {
     }
 
     /// @dev 注册一个规则项的事件.
-    /// @param ruleType 规则类型，以uint32形式表示.
-    /// @param expression 需要注册到预言机上的规则表达式.
-    event registerRuleEvent(uint32 ruleType, string expression);
+    /// @param relationID 在智能合约中注册后对应的规则关系ID
+    /// @param values 需要注册到预言机上的规则表达式.
+    event registerRuleEvent(uint32 relationID, string[] values);
 
     /// @dev 验证一个规则项的事件.
     /// @param ruleType 规则类型，以uint32形式表示.
@@ -88,11 +88,6 @@ contract Rules {
         ValidationRelationship storage relation;
         relation.Operator = op;
         for (uint32 i = 0; i < expressions.length; i++) {
-            emit registerRuleEvent(
-                uint32(expressions[i].Type),
-                expressions[i].Expression
-            );
-
             uint32 id = registerRule(
                 expressions[i].Type,
                 expressions[i].Expression
@@ -103,6 +98,8 @@ contract Rules {
         relationID = relationsCount;
         relationMap[relationID] = relation;
         relationsCount++;
+
+        emit registerRuleEvent(relationID, args);
 
         return relationID;
     }

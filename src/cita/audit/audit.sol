@@ -48,12 +48,6 @@ contract Audit is Rules {
         auditees[numAuditees] = name;
     }
 
-    function registerRule(string name, string time, string location, string faceRec, string objectRec) public {
-        numRules++;
-        rules[numRules] = Rule(time, location, faceRec, objectRec);
-        ruleNames[numRules] = name;
-    }
-
     function registerProject(string detail, uint256 auditeeId, uint256 ruleId) public {
         numProjects++;
         projects[numProjects] = Project(detail, auditeeId, ruleId);
