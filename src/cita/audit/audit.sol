@@ -1,7 +1,24 @@
-pragma solidity 0.4.24;
+pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
-contract Audit {
+import "./Rules.sol";
+
+contract Audit is Rules {
+
+    /// @dev 规则合约的构造方法，这里实现Rules.
+    /// @param face 人脸识别服务合约地址.
+    /// @param identify 物体识别服务合约地址.
+    /// @param time 时间服务合约地址.
+    /// @param location 定位服务合约地址.
+    constructor(
+        address face,
+        address identify,
+        address time,
+        address location
+    ) Rules (face, identify, time, location) {
+
+    }
+
     uint256 numAuditees;
     mapping (uint256 => string) auditees;
 
@@ -24,6 +41,7 @@ contract Audit {
     mapping (uint256 => Project) projects;
 
     mapping (uint256 => mapping (uint256 => mapping (uint256 => Rule))) events;
+
 
     function registerAuditee(string name) public {
         numAuditees++;
