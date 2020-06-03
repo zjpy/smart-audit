@@ -17,36 +17,19 @@
 git clone git@github.com:hyperledger/fabric-samples.git
 ```
 
-2.切到v1.4.0
+2.切换分支到v1.4.0
 
 ```shell
 git checkout v1.4.0
 ```
 
-3.修改github.com/hyperledger/fabric-samples/chaincode-docker-devmode/docker-compose-simple.yaml
+3.修改docker-compose-simple.yaml
 
 在chaincode及cli里添加如下environment以及volumes：
 
 ```shell
-environment:
-    CORE_PEER_ADDRESSAUTODETECT=true
-volumes:
-    - ./../chaincode/smart_audit/fabric:/opt/gopath/src/fabric
-    - ./../chaincode/smart_audit/core:/opt/gopath/src/core
-    - ./../chaincode/smart_audit/oracles:/opt/gopath/src/oracles
-```
-
-指定yaml文件中所有image的版本信息为fabric1.4
-
-```yaml
-orderer:
-    image: hyperledger/fabric-orderer:1.4
-peer:
-    image: hyperledger/fabric-peer:1.4
-cli:
-    image: hyperledger/fabric-tools:1.4
-chaincode:
-    image: hyperledger/fabric-ccenv:1.4
+cd github.com/smart-audit/src/fabric
+cp docker-compose-simple.yaml github.com/hyperledger/fabric-samples/chaincode-docker-devmode/docker-compose-simple.yaml
 ```
 
 4.拷贝smart-audit源码至chaincode目录
