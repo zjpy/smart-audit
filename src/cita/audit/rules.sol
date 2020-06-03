@@ -68,8 +68,7 @@ contract Rules {
 
     /// @dev 注册一个规则项的事件.
     /// @param relationID 在智能合约中注册后对应的规则关系ID
-    /// @param values 需要注册到预言机上的规则表达式.
-    event registerRuleEvent(uint32 relationID, string[] values);
+    event registerRuleEvent(uint32 relationID);
 
     /// @dev 验证一个规则项的事件.
     /// @param ruleType 规则类型，以uint32形式表示.
@@ -99,7 +98,7 @@ contract Rules {
         relationMap[relationID] = relation;
         relationsCount++;
 
-        emit registerRuleEvent(relationID, args);
+        emit registerRuleEvent(relationID);
 
         return relationID;
     }
@@ -117,7 +116,6 @@ contract Rules {
         for (uint32 i = 0; i < valueList.length; i++) {
             RuleType t = valueList[i].Type;
             uint32 ruleID = relation.Rules[uint32(t)];
-            require(ruleID != 0, "规则类型不在需要验证的列表中");
 
             emit validateRuleEvent(
                 uint32(t),
