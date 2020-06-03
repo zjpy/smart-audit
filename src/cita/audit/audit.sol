@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 pragma experimental ABIEncoderV2;
 
-import "./Rules.sol";
+import "./rules.sol";
 
 // Smart Audit 合约
 contract Audit is Rules {
@@ -28,25 +28,35 @@ contract Audit is Rules {
     /// @param ProjectID Project ID.
     event registerProjectEvent(uint32 ProjectID);
 
+    // auditee 计数器.
     uint32 numAuditees;
+    // 用于存储所有 auditees.
     mapping (uint32 => string) auditees;
 
+    // 用于定义单个项目.
     struct Project {
         string detail;
         uint32 auditeeID;
         uint32 relationID;
     }
+    // 项目计数器.
     uint32 numProjects;
+    // 用于存储所有的项目实例.
     mapping (uint32 => Project) projects;
 
+    // 用于定义单个审计事件
     struct Event {
         uint32 auditeeID;
         uint32 projectID;
         string[] value;
     }
+    // 审计事件计数器.
     uint32 numEvents;
+    // 用于存储所有的审计事件.
     mapping (uint32 => Event) events;
 
+    /// @dev 注册一个 auditee.
+    /// @param name auditee 名字.
     function registerAuditee(string name) public {
         numAuditees++;
         auditees[numAuditees] = name;
@@ -54,6 +64,10 @@ contract Audit is Rules {
         emit registerAuditeeEvent(numAuditees);
     }
 
+    /// @dev 注册一个项目.
+    /// @param detail 项目信息.
+    /// @param auditeeID auditee ID.
+    /// @param relationID 相关规则 ID.
     function registerProject(string detail, uint32 auditeeID, uint32 relationID) public {
         string storage auditee = auditees[auditeeID];
  //       require(auditee, "auditee 不存在");
@@ -67,6 +81,10 @@ contract Audit is Rules {
         emit registerProjectEvent(numProjects);
     }
 
+    /// @dev 添加一个审计事件.
+    /// @param auditeeID auditee ID.
+    /// @param projectID 项目ID.
+    /// @param value 具体验证内容表达式.
     function addEvent(uint32 auditeeID, uint32 projectID, string[] value) public {
         string storage auditee = auditees[auditeeID];
  //       require(auditee, "auditee 不存在");
@@ -80,22 +98,23 @@ contract Audit is Rules {
         events[numEvents] = Event(auditeeID, projectID, value);
     }
 
+    /// @dev 获取一个 auditee.
+    /// @param auditeeID auditee ID.
+    /// @return string auditee 名字.
     function getAuditee(uint32 auditeeID) public view returns(string) {
         return auditees[auditeeID];
     }
 
-    function getRule(uint32 relationID)
-        public
-        view
-        returns(ValidationRelationship)
-    {
-        return relationMap[relationID];
-    }
-
+    /// @dev 获取一个项目.
+    /// @param projectID 项目ID.
+    /// @return Project 项目内容.
     function getProject(uint32 projectID) public view returns(Project) {
         return projects[projectID];
     }
 
+    /// @dev 获取一个项目维护者.
+    /// @param projectID 项目ID.
+    /// @return uint32 auditee ID.
     function getMaintainers(uint32 projectID) public view returns(uint32) {
         Project storage project = projects[projectID];
  //       require(project, "项目不存在");
@@ -103,6 +122,9 @@ contract Audit is Rules {
         return project.auditeeID;
     }
 
+    /// @dev 获取一个审计事件.
+    /// @param eventID 审计事件ID.
+    /// @return Event 审计事件内容.
     function queryEvents(uint32 eventID) public view returns(Event) {
        return events[eventID];
     }
