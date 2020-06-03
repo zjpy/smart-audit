@@ -3,7 +3,7 @@ package project
 import (
 	"core/common"
 	"core/orgnization"
-	rules2 "core/rules"
+	"core/rules"
 	"encoding/json"
 	"errors"
 )
@@ -20,7 +20,7 @@ type AuditeeSpecification struct {
 	Project Project
 
 	// 审计当事人需要遵守的规则
-	Rule rules2.ValidationRelationship
+	Rule rules.ValidationRelationship
 }
 
 // 验证审计当事人
