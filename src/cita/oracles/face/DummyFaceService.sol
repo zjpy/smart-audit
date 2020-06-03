@@ -8,11 +8,13 @@ import "./Result.sol";
 // 该智能合约用于模拟人脸识别的预言机服务调用
 contract DummyFaceService is IService {
     uint32 nonce;
+    uint32 dummyID;
 
     /// @dev 构造方法，目前仅用于初始化Nonce值.
     constructor() public {
         // 这里初始化nonce值
         nonce = 10;
+        dummyID = 0;
     }
 
     /// @dev 注册一个规则项.
@@ -20,7 +22,9 @@ contract DummyFaceService is IService {
     /// @return ruleID 返回在预言机服务中注册后对应的规则ID
     function register(string[] args) public returns (uint32 ruleID) {
         // 由于假设是固定的验证规则，所以这里不需要额外工作
-        return 0;
+        ruleID = dummyID;
+        dummyID++;
+        return ruleID;
     }
 
     /// @dev 验证一个规则项.
