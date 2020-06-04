@@ -33,6 +33,9 @@ contract Audit is Rules {
     // 用于存储所有 auditees.
     mapping (uint32 => string) auditees;
 
+    // 用于存储所有审计维护者
+    uint32[] maintainers;
+
     // 用于定义单个项目.
     struct Project {
         string detail;
@@ -112,14 +115,10 @@ contract Audit is Rules {
         return projects[projectID];
     }
 
-    /// @dev 获取一个项目维护者.
-    /// @param projectID 项目ID.
-    /// @return uint32 auditee ID.
-    function getMaintainers(uint32 projectID) public view returns(uint32) {
-        Project storage project = projects[projectID];
- //       require(project, "项目不存在");
-
-        return project.auditeeID;
+    /// @dev 获取一个维护者列表.
+    /// @return uint32[] 维护者列表.
+    function getMaintainers() public view returns(uint32[]) {
+        return maintainers;
     }
 
     /// @dev 获取一个审计事件.
