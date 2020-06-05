@@ -4,7 +4,7 @@
 
 目前测试环境为：
 
-- Mac OSX、Ubuntu 16.04
+- Ubuntu 16.04 / MacOS 10.15 
 - JDK 1.8+
 
 ### 启动链
@@ -307,29 +307,170 @@
 
 #### 部署审计业务合约
 
+1. 通过如下命令部署审计合约
+
+   ```shell
+   deployByCNS Audit 1.0 ["ZhangSan","LiSi"] "0x943eb039fe84f35e7fb8c09535f46441449a76c9" "0xa348d87bb437b88dacd551be17e6111ec0b1f745" "0x7edac4c1fd59d55130806dbe537b718594189374" "0x66038422a9700ca5af804e1bb53a77a20e806de2"
+   ```
+
+   如果部署合约成功会得到如下响应消息：
+
+   ```shell
+   contract address: 0x071a9de132bf0b24aa9c75aadc7d42baa151ec4c
+   ```
+
+2. 可以通过如下命令查询时间服务的部署合约：
+
+   ```shell
+   queryCNS Audit
+   ```
+
+   若步骤1部署成功会得到如下响应：
+
+   ```shell
+   ---------------------------------------------------------------------------------------------
+   |                   version                   |                   address                   |
+   |                     1.0                     | 0x071a9de132bf0b24aa9c75aadc7d42baa151ec4c  |
+   ---------------------------------------------------------------------------------------------
+   ```
+
+   可以看到这里查询到的合约地址与步骤1的返回结果一致
 
 
 ### 调用合约
 
 #### 合约维护人员查询
 
+1. 通过如下命令查询合约维护人员
 
+   ```shell
+   callByCNS Audit:1.0 getMaintainers
+   ```
+
+   如果查询成功，会返回如下响应信息：
+
+   ```shell
+   transaction hash: 0x7626fde6681d48fb73b0cba393ce92cbd2d2f48765fc1b1a3df370586b631e1b
+   ---------------------------------------------------------------------------------------------
+   Output
+   function: getMaintainers()
+   return type: (uint32[])
+   return value: ([0, 1])
+   ---------------------------------------------------------------------------------------------
+   ```
+
+   这里返回的索引为注册审计部署合约填入的合约维护人员对应的ID值
 
 #### 录入审计当事人
 
+1. 通过如下命令执行审计当事人录入操作：
 
+   ```shell
+   callByCNS Audit:1.0 registerAuditee "WangWu"
+   ```
+
+   如果注册成功，会返回如下响应消息，其中`registerAuditeeEvent`为注册成功后触发的事件：
+
+   ```shell
+   transaction hash: 0xf5f62f562fb3f5e4de9f82230f00725e15a64d83bad74f96d368a48e93d85aec
+   ---------------------------------------------------------------------------------------------
+   Event logs
+   event signature: registerAuditeeEvent(uint32) index: 0
+   event value: (0)
+   ---------------------------------------------------------------------------------------------
+   ```
+
+2. 根据返回的ID值按如下方式查询审计当事人信息：
+
+   ```
+   callByCNS Audit:1.0 getAuditee 0
+   ```
+
+   若调用成功会返回如下响应消息：
+
+   ```shell
+   transaction hash: 0xc2361efe8f121ae06f842484e05c99d73fce2585c32732b4acc053a4e1cfc4aa
+   ---------------------------------------------------------------------------------------------
+   Output
+   function: getAuditee()
+   return type: (string)
+   return value: (WangWu)
+   ---------------------------------------------------------------------------------------------
+   ```
 
 #### 录入规则
 
+1. 通过如下命令执行规则录入操作：
 
+   ```shell
+   callByCNS Audit:1.0 registerRules "AND", "Time", "(>= 9) AND (<= 18)", "Location", "IN(39.9 116.3 1000)", "FaceRecognize", "", "ObjectRecognize", ""
+   ```
+
+   如果注册成功，则会返回如下响应消息，其中`registerRuleEvent`为注册成功后触发的事件：
+
+   ```shell
+   transaction hash: 0xcf48dd7ef0a48f9eb402d2a8d3576c5a7a982d6747209c59703fad65395f9af2
+   ---------------------------------------------------------------------------------------------
+   Event logs
+   event signature: registerRuleEvent(uint32) index: 0
+   event value: (0)
+   ---------------------------------------------------------------------------------------------
+   ```
 
 #### 录入项目
 
+1. 通过如下命令执行项目录入操作：
 
+   ```
+   callByCNS Audit:1.0 registerProject "yucong_project" 0 0
+   ```
+
+   如何注册成功，则会返回如下消息，其中`registerProjectEvent`为注册成功后触发的事件：
+
+   ```
+   transaction hash: 0xcf48dd7ef0a48f9eb402d2a8d3576c5a7a982d6747209c59703fad65395f9af2
+   ---------------------------------------------------------------------------------------------
+   Event logs
+   event signature: registerProjectEvent(uint32) index: 0
+   event value: (0)
+   ---------------------------------------------------------------------------------------------
+   ```
+
+2. 根据返回的ID值按如下方式查询项目信息：
+
+   ```
+   callByCNS Audit:1.0 getProject 0
+   ```
+
+   若调用成功会返回如下响应消息：
+
+   ```shell
+   transaction hash: 0xc2361efe8f121ae06f842484e05c99d73fce2585c32732b4acc053a4e1cfc4aa
+   ---------------------------------------------------------------------------------------------
+   Output
+   function: getProject()
+   return type: (tuple(string,uint32,uint32))
+   return value: ([yucong_project, 0, 0])
+   ---------------------------------------------------------------------------------------------
+   ```
 
 #### 新增审计事件
 
-1. 
+1. 通过如下命令执行审计事件新增操作：
+
+   ```
+   callByCNS Audit:1.0 addEvent 0 0 0 ["Time", "2020-06-01T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]
+   ```
+
+   如果新增成功，则每一个预言机服务会打印相应的事件
+
+2. 通过如下命令可查询到指定当事人在某个项目及规则下的所有事件：
+
+   ```
+   callByCNS Audit:1.0 queryEvents 0 0 0 
+   ```
+
+   
 
 
 ## 参考链接

@@ -4,7 +4,7 @@
 
 目前测试环境为：
 
-- Mac OSX
+- Ubuntu 16.04 / MacOS 10.15 
 
 ### 环境准备
 
@@ -138,7 +138,7 @@ cat key.json
    ```
 
    得到合约地址：0x568eae6fcac7c10bfd5258730cd20b0ed90dbc60
-   
+
 
 #### 部署定位合约
 
@@ -182,7 +182,7 @@ cat key.json
     --private-key 0xae469f2a07999b3ed42728b7afff2e1219441a0ef65f5e6192f2d8f0a47601b1 \
     --url https://testnet.citahub.com
    ```
-  
+
    返回：
    ```
    {
@@ -201,7 +201,7 @@ cat key.json
       --hash 0x0d0faedb62523ef3bd8c6ff74da2c228ddf7dd71f0e27583a4424809b5e4f773 \
       --url https://testnet.citahub.com
    ```
-   
+
    得到合约地址：0xfd851fbbb503cf9a0d6f0a6b5b7db073ddbc5daf
 
 #### 部署物体识别合约

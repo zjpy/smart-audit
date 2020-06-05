@@ -190,7 +190,7 @@ docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["getMaintain
 Chaincode invoke successful. result: status:200 payload:"{\"result\":[{\"Name\":\"maintainer1\",\"ID\":0},{\"Name\":\"maintainer2\",\"ID\":1}]}"
 ```
 
-可以看到返回结果中包含了在部署审计合约时传入的运维人员，由于只是查询操作，我们不需要进一步将其发送到链上。
+可以看到返回结果中包含了在部署审计合约时传入的运维人员。
 
 
 
@@ -229,7 +229,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"Name\":\"ZhanSan\",\
 1.通过如下命令录入一个审计规则：
 
 ```shell
-docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerRule", "AND", "Time", "(>= 9) AND (<= 18)", "Location", "IN(39.9 116.3 1000)", "FaceRecognize", "", "ObjectRecognize", ""]}'
+docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerRules", "AND", "Time", "(>= 9) AND (<= 18)", "Location", "IN(39.9 116.3 1000)", "FaceRecognize", "", "ObjectRecognize", ""]}'
 ```
 
 如果录入成功则会返回如下响应消息：
@@ -243,7 +243,7 @@ Chaincode invoke successful. result: status:200 payload:"0"
 2.通过如下命令查询我们注册的审计规则
 
 ```shell
-docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["getRule", "0"]}'
+docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["getRules", "0"]}'
 ```
 
 如果调用成功则会返回如下响应消息：
@@ -338,7 +338,7 @@ docker exec cli peer chaincode instantiate -n audit -v 0 -c '{"Args":["init","ma
 
 ```shell
 docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerAuditee", "ZhanSan"]}'
-docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerRule", "AND", "Time", "(>= 9) AND (<= 18)", "Location", "IN(39.9 116.3 1000)", "FaceRecognize", "", "ObjectRecognize", ""]}'
+docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerRules", "AND", "Time", "(>= 9) AND (<= 18)", "Location", "IN(39.9 116.3 1000)", "FaceRecognize", "", "ObjectRecognize", ""]}'
 docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerProject", "POS Audit", "This is location","0", "0"]}'
 docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["addEvent", "0", "0", "0", "1589532423", "Time", "2020-05-26T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]}'
 ```

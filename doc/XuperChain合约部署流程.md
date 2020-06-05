@@ -615,7 +615,7 @@
 1. 通过如下命令注册一个规则：
 
    ```shell
-   ./xchain-cli wasm invoke audit -a '{"0":"AND","1":"Time","2":"(>= 9) AND (<= 18)","3":"Location","4":"IN(39.9 116.3 1000)","5":"FaceRecognize","6":"","7":"ObjectRecognize","8":""}' --method registerRule -m --output registerRule.out
+   ./xchain-cli wasm invoke audit -a '{"0":"AND","1":"Time","2":"(>= 9) AND (<= 18)","3":"Location","4":"IN(39.9 116.3 1000)","5":"FaceRecognize","6":"","7":"ObjectRecognize","8":""}' --method registerRules -m --output registerRules.out
    ```
 
    如果注册成功会返回如下响应消息：
@@ -631,18 +631,18 @@
 2. 添加步骤2中的返回fee值后重复步骤2中的命令：
 
    ```shell
-   ./xchain-cli wasm invoke audit -a '{"0":"AND","1":"Time","2":"(>= 9) AND (<= 18)","3":"Location","4":"IN(39.9 116.3 1000)","5":"FaceRecognize","6":"","7":"ObjectRecognize","8":""}' --method registerRule -m --output registerRule.out --fee 506174
+   ./xchain-cli wasm invoke audit -a '{"0":"AND","1":"Time","2":"(>= 9) AND (<= 18)","3":"Location","4":"IN(39.9 116.3 1000)","5":"FaceRecognize","6":"","7":"ObjectRecognize","8":""}' --method registerRules -m --output registerRules.out --fee 506174
    ```
 
-   若生成成功则会在相同目录下生成名为`registerRule.out`的文件
+   若生成成功则会在相同目录下生成名为`registerRules.out`的文件
 
 3. 对步骤3中生成的原始交易签名
 
    ```shell
-   ./xchain-cli multisig sign --tx registerRule.out --output registerRule.sign --keys data/keys/
+   ./xchain-cli multisig sign --tx registerRules.out --output registerRules.sign --keys data/keys/
    ```
 
-   签名成功后在相同目录下生成对原始交易的签名文件`registerRule.sign`，并返回响应消息如下：
+   签名成功后在相同目录下生成对原始交易的签名文件`registerRules.sign`，并返回响应消息如下：
 
    ```shell
    {
@@ -654,7 +654,7 @@
 4. 将原始交易及签名发送到链上
 
    ```shell
-   ./xchain-cli multisig send --tx registerRule.out registerRule.sign registerRule.sign
+   ./xchain-cli multisig send --tx registerRules.out registerRules.sign registerRules.sign
    ```
 
    发送成功后会返回交易的Hash值如下：
@@ -666,7 +666,7 @@
 5. 通过getAuditee接口查询以测试审计当事人是否注册成功
 
    ```shell
-   ./xchain-cli wasm invoke audit -a '{"0":"0"}' --method getRule -m
+   ./xchain-cli wasm invoke audit -a '{"0":"0"}' --method getRules -m
    ```
 
    可以看到如下响应结果：
