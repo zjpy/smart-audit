@@ -2,15 +2,15 @@ package invokes
 
 import (
 	"core/contract"
-	rules2 "core/rules"
+	"core/rules"
 	"fmt"
 	"log"
 	"strconv"
 )
 
 // 注册规则，返回规则ID
-func RegisterRuleMain(args []string, context contract.Context) *contract.Response {
-	ruleID, err := rules2.RegisterRules(args, context)
+func RegisterRulesMain(args []string, context contract.Context) *contract.Response {
+	ruleID, err := rules.RegisterRules(args, context)
 	if err != nil {
 		log.Println("注册规则失败：", err.Error())
 		return contract.Error(fmt.Sprint("注册规则失败，详细信息：", err))
@@ -23,7 +23,7 @@ func RegisterRuleMain(args []string, context contract.Context) *contract.Respons
 }
 
 // 根据规则ID获取规则信息
-func GetRuleMain(args []string, context contract.Context) *contract.Response {
+func GetRulesMain(args []string, context contract.Context) *contract.Response {
 	if len(args) == 0 {
 		return contract.Error("查询失败，需要提供规则ID")
 	}
@@ -33,8 +33,8 @@ func GetRuleMain(args []string, context contract.Context) *contract.Response {
 		return contract.Error(fmt.Sprintf("解析规则ID出错，详细信息：%s", err.Error()))
 	}
 
-	rule := rules2.ValidationRelationship{
-		Rules: make(map[rules2.RuleType]contract.ServiceRuleID, 0),
+	rule := rules.ValidationRelationship{
+		Rules: make(map[rules.RuleType]contract.ServiceRuleID, 0),
 		ID:    uint32(ruleID)}
 	ruleBuf, err := context.GetState(rule.Key())
 	if err != nil {

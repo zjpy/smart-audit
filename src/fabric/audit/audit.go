@@ -27,8 +27,8 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 	switch context.GetFunctionName() {
 	// 录入审计规则
-	case invokes.RegisterRule:
-		return contract.Response(invokes.RegisterRuleMain(args, context))
+	case invokes.RegisterRules:
+		return contract.Response(invokes.RegisterRulesMain(args, context))
 	// 录入审计当事人
 	case invokes.RegisterAuditee:
 		return contract.Response(invokes.RegisterAuditeeMain(args, context))
@@ -43,7 +43,7 @@ func (s *SmartAudit) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 		return contract.Response(invokes.GetAuditeeMain(args, context))
 	// 根据规则ID，查询规则信息
 	case invokes.GetRule:
-		return contract.Response(invokes.GetRuleMain(args, context))
+		return contract.Response(invokes.GetRulesMain(args, context))
 	// 根据项目ID，查询项目信息
 	case invokes.GetProject:
 		return contract.Response(invokes.GetProjectMain(args, context))

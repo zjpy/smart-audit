@@ -19,10 +19,10 @@ func (s *SmartAudit) Initialize(ctx code.Context) code.Response {
 }
 
 // 对应 core/invokes包下的RegisterRule方法定义
-func (s *SmartAudit) RegisterRule(ctx code.Context) code.Response {
+func (s *SmartAudit) RegisterRules(ctx code.Context) code.Response {
 	context := contract.NewContext(ctx)
 	args := context.GetArgs()
-	return contract.Response(invokes.RegisterRuleMain(args, context))
+	return contract.Response(invokes.RegisterRulesMain(args, context))
 }
 
 // 对应 core/invokes包下的RegisterProject方法定义
@@ -54,10 +54,10 @@ func (s *SmartAudit) GetAuditee(ctx code.Context) code.Response {
 }
 
 // 对应 core/invokes包下的GetRule方法定义
-func (s *SmartAudit) GetRule(ctx code.Context) code.Response {
+func (s *SmartAudit) GetRules(ctx code.Context) code.Response {
 	context := contract.NewContext(ctx)
 	args := context.GetArgs()
-	return contract.Response(invokes.GetRuleMain(args, context))
+	return contract.Response(invokes.GetRulesMain(args, context))
 }
 
 // 对应 core/invokes包下的GetProject方法定义

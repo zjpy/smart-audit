@@ -2,7 +2,7 @@ package invokes
 
 const (
 	// 录入审计规则，合约调用方法名
-	RegisterRule = "registerRule"
+	RegisterRules = "registerRules"
 	// 录入审计当事人，合约调用方法名
 	RegisterAuditee = "registerAuditee"
 	// 录入项目，合约调用方法名
