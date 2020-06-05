@@ -54,16 +54,8 @@ contract Audit is Rules {
     // 用于存储所有的项目实例.
     mapping (uint32 => Project) projects;
 
-    // 用于定义单个审计事件
-    struct Event {
-        uint32 auditeeID;
-        uint32 projectID;
-        string[] value;
-    }
-    // 审计事件计数器.
-    uint32 numEvents;
     // 用于存储所有的审计事件.
-    mapping (uint32 => Event) events;
+    mapping (uint32 =>  mapping (uint32 => string[])) events;
 
     /// @dev 注册一个 auditee.
     /// @param name auditee 名字.
@@ -92,7 +84,7 @@ contract Audit is Rules {
     }
 
     /// @dev 添加一个审计事件.
-    /// @param auditeeID auditee ID.
+    /// @param auditeeID 被审计人ID.
     /// @param projectID 项目ID.
     /// @param value 具体验证内容表达式.
     function addEvent(uint32 auditeeID, uint32 projectID, string[] value) public {
@@ -104,8 +96,7 @@ contract Audit is Rules {
 
         validateRules(project.relationID, value);
 
-        numEvents++;
-        events[numEvents] = Event(auditeeID, projectID, value);
+        events[auditeeID][projectID] = value;
     }
 
     /// @dev 获取一个 auditee.
@@ -133,9 +124,10 @@ contract Audit is Rules {
     }
 
     /// @dev 获取一个审计事件.
-    /// @param eventID 审计事件ID.
-    /// @return Event 审计事件内容.
-    function queryEvents(uint32 eventID) public view returns(Event) {
-       return events[eventID];
+    /// @param auditeeID 被审计人ID.
+    /// @param projectID 项目ID.
+    /// @return string[] 审计内容.
+    function queryEvents(uint32 auditeeID, uint32 projectID) public view returns(string[]) {
+       return events[auditeeID][projectID];
     }
 }
