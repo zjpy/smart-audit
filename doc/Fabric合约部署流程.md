@@ -48,8 +48,6 @@ cd github.com/hyperledger/fabric-samples/chaincode-docker-devmode
 docker-compose -f docker-compose-simple.yaml up
 ```
 
-
-
 ## 合约调用
 
 ### 部署合约
@@ -74,9 +72,7 @@ Installed remotely response:<status:200 payload:"OK" >
 docker exec cli peer chaincode instantiate -n Time -v 0 -c '{"Args":[]}' -C myc
 ```
 
-实例化后没有返回错误则部署成功了
-
-
+实例化后没有返回错误则部署成功
 
 #### 启动位置合约
 
@@ -98,9 +94,7 @@ Installed remotely response:<status:200 payload:"OK" >
 docker exec cli peer chaincode instantiate -n Location -v 0 -c '{"Args":[]}' -C myc
 ```
 
-实例化后没有返回错误则部署成功了
-
-
+实例化后没有返回错误则部署成功
 
 #### 启动人脸识别合约
 
@@ -122,9 +116,7 @@ Installed remotely response:<status:200 payload:"OK" >
 docker exec cli peer chaincode instantiate -n FaceRecognize -v 0 -c '{"Args":[]}' -C myc
 ```
 
-实例化后没有返回错误则部署成功了
-
-
+实例化后没有返回错误则部署成功
 
 #### 启动物体识别合约
 
@@ -146,9 +138,7 @@ Installed remotely response:<status:200 payload:"OK" >
 docker exec cli peer chaincode instantiate -n ObjectRecognize -v 0 -c '{"Args":[]}' -C myc
 ```
 
-实例化后没有返回错误则部署成功了
-
-
+实例化后没有返回错误则部署成功
 
 #### 启动审计业务合约
 
@@ -170,9 +160,7 @@ Installed remotely response:<status:200 payload:"OK" >
 docker exec cli peer chaincode instantiate -n audit -v 0 -c '{"Args":["init","maintainer1","maintainer2"]}' -C myc
 ```
 
-实例化后没有返回错误则部署成功了
-
-
+实例化后没有返回错误则部署成功
 
 ### 调用合约
 
@@ -191,8 +179,6 @@ Chaincode invoke successful. result: status:200 payload:"{\"result\":[{\"Name\":
 ```
 
 可以看到返回结果中包含了在部署审计合约时传入的运维人员。
-
-
 
 #### 录入审计当事人
 
@@ -222,8 +208,6 @@ docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["getAuditee"
 Chaincode invoke successful. result: status:200 payload:"{\"Name\":\"ZhanSan\",\"ID\":0}" 
 ```
 
-
-
 #### 录入规则
 
 1.通过如下命令录入一个审计规则：
@@ -251,8 +235,6 @@ docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["getRules", 
 ```shell
 Chaincode invoke successful. result: status:200 payload:"{\"Operator\":\"AND\",\"Rules\":{\"FaceRecognize\":0,\"Location\":0,\"ObjectRecognize\":0,\"Time\":0},\"ID\":0}"
 ```
-
-
 
 #### 录入项目
 
@@ -282,8 +264,6 @@ docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["getProject"
 Chaincode invoke successful. result: status:200 payload:"{\"Name\":\"POS Audit\",\"ID\":0,\"Description\":\"This is a bank project, used by bank employees to check if they did check the POS related bussiness themselfs within the specified time and location\",\"AuditeeRulesMap\":{\"{\\\"Name\\\":\\\"ZhanSan\\\",\\\"ID\\\":0}\":\"{\\\"Operator\\\":\\\"AND\\\",\\\"Rules\\\":{\\\"FaceRecognize\\\":0,\\\"Location\\\":0,\\\"ObjectRecognize\\\":0,\\\"Time\\\":0},\\\"ID\\\":0}\"}}"
 ```
 
-
-
 #### 新增审计事件
 
 1.通过如下命令新增一个审计事件
@@ -311,8 +291,6 @@ docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["queryEvents
 ```shell
 Chaincode invoke successful. result: status:200 payload:"{\"result\":[{\"ID\":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\"Auditee\":{\"Name\":\"\",\"ID\":0},\"Project\":{\"Name\":\"\",\"ID\":0,\"Description\":\"\",\"AuditeeRulesMap\":null},\"Rule\":{\"Operator\":\"\",\"Rules\":{},\"ID\":0},\"Timestamp\":1589532423,\"Params\":[\"Time\",\"2020-06-01T15:04:05.000Z\",\"Location\",\"39.901 116.299\",\"FaceRecognize\",\"/9j/4SMF...\",\"ObjectRecognize\",\"iVBORw0...\"],\"Index\":0}]}"
 ```
-
-
 
 ### 快速启动所有合约
 
