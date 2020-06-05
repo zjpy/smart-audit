@@ -30,7 +30,7 @@ func (v *ValidationRelationship) CountKey() string {
 }
 
 func (v *ValidationRelationship) GetCount() uint32 {
-	return uint32(v.ID) + 1
+	return v.ID + 1
 }
 
 func (v *ValidationRelationship) Key() string {
@@ -44,11 +44,6 @@ func (v *ValidationRelationship) Value() ([]byte, error) {
 	}
 
 	return value, nil
-}
-
-func (v *ValidationRelationship) Validate() error {
-	// todo complete me
-	return nil
 }
 
 func registerValidationRelationship(p *ValidationRelationship,

@@ -38,12 +38,6 @@ func (r *Registration) GetCount() uint32 {
 	return r.Index + 1
 }
 
-// 验证审计事件合法性
-func (r *Registration) Validate() error {
-	// todo complete me
-	return nil
-}
-
 // 审计事件存储的Key值
 func (r *Registration) Key() string {
 	return r.ID.String() + strconv.FormatUint(uint64(r.Index), 10)

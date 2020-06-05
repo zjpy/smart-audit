@@ -23,12 +23,6 @@ type AuditeeSpecification struct {
 	Rule rules.ValidationRelationship
 }
 
-// 验证审计当事人
-func (a *AuditeeSpecification) Validate() error {
-	// todo complete me
-	return nil
-}
-
 // 审计当事人存储的Key值
 func (a *AuditeeSpecification) Key() string {
 	return a.ID.String()

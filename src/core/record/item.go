@@ -11,9 +11,6 @@ type Item interface {
 
 	// 序列化存储除Key值外的所有数据
 	Value() ([]byte, error)
-
-	// 合法性检查，主要为数据本身的合法性相关
-	Validate() error
 }
 
 // 存储一条记录，将接口中的Key、Value值一起存储到区块链中

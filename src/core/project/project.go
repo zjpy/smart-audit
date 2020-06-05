@@ -38,12 +38,6 @@ func (p *Project) GetCount() uint32 {
 	return p.ID + 1
 }
 
-// 验证项目合法性
-func (p *Project) Validate() error {
-	// todo complete me
-	return nil
-}
-
 // 项目存储Key值
 func (p *Project) Key() string {
 	return Prefix + strconv.FormatUint(uint64(p.ID), 10)

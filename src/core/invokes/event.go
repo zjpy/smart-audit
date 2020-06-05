@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strconv"
 )
 
 // 添加审计事件
@@ -38,19 +37,6 @@ func AddEventMain(args []string, context contract.Context) *contract.Response {
 	return &contract.Response{Payload: []byte("OK")}
 }
 
-func verify(registration *project.Registration, context contract.Context) error {
-	if err := registration.Validate(); err != nil {
-		return fmt.Errorf("合规事件%s数据验证失败，详细信息：%s", registration.ID, err)
-	}
-
-	if err := rules.ValidateRules(registration.Rule.ID, registration.Params,
-		context); err != nil {
-		return fmt.Errorf("合规事件%s规则验证失败，详细信息：%s", registration.ID, err)
-	}
-
-	return nil
-}
-
 // 根据审计当事人ID、项目ID以及规则ID，获取所有审计当事人的审计事件
 func QueryEventsMain(args []string, context contract.Context) *contract.Response {
 	if len(args) < 3 {
@@ -58,7 +44,7 @@ func QueryEventsMain(args []string, context contract.Context) *contract.Response
 	}
 
 	// 根据传入的参数获取eventID
-	eventID, err := GetEventID(args)
+	eventID, err := project.GetEventID(args, context)
 	if err != nil {
 		return contract.Error(err.Error())
 	}
@@ -75,36 +61,6 @@ func QueryEventsMain(args []string, context contract.Context) *contract.Response
 		return contract.Error(err.Error())
 	}
 	return &contract.Response{Payload: result}
-}
-
-// 根据传入的参数获取审计事件ID
-func GetEventID(args []string) (*common.Uint256, error) {
-
-	auditeeID, err := strconv.ParseUint(args[0], 10, 32)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
-	}
-
-	projectID, err := strconv.ParseUint(args[1], 10, 32)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析审计事件对应项目ID出错，详细信息：%s", err.Error()))
-	}
-
-	ruleID, err := strconv.ParseUint(args[2], 10, 32)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析审计事件对应规则ID出错，详细信息：%s", err.Error()))
-	}
-
-	u32AuditeeID := common.Uint32ToBytes(uint32(auditeeID))
-	u32ProjectID := common.Uint32ToBytes(uint32(projectID))
-	u32RuleID := common.Uint32ToBytes(uint32(ruleID))
-
-	ids := append(append(append(
-		[]byte{}, u32AuditeeID[:]...), u32ProjectID[:]...), u32RuleID[:]...)
-	var eventID common.Uint256
-	copy(eventID[:], ids)
-
-	return &eventID, nil
 }
 
 // 获取审计事件查询的最终结果，json格式
@@ -143,4 +99,14 @@ func getQueryEventResult(eventID *common.Uint256,
 	log.Printf("Query result: %s", buffer.String())
 
 	return buffer.Bytes(), nil
+}
+
+// 验证注册规则
+func verify(registration *project.Registration, context contract.Context) error {
+	if err := rules.ValidateRules(registration.Rule.ID, registration.Params,
+		context); err != nil {
+		return fmt.Errorf("合规事件%s规则验证失败，详细信息：%s", registration.ID, err)
+	}
+
+	return nil
 }

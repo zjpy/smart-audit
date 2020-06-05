@@ -16,12 +16,6 @@ type Member struct {
 	ID uint32
 }
 
-// 成员验证
-func (m *Member) Validate() error {
-	// todo complete me
-	return nil
-}
-
 // 成员存储Key值
 func (m *Member) Key() string {
 	return strconv.FormatUint(uint64(m.ID), 10)

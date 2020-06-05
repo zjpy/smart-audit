@@ -16,10 +16,6 @@ func RegisterProjectMain(args []string, context contract.Context) *contract.Resp
 		return contract.Error(fmt.Sprint("解析审计业务失败，详细信息：", err))
 	}
 
-	if err = p.Validate(); err != nil {
-		return contract.Error(fmt.Sprintf("审计业务%s数据验证失败，详细信息：%s", p.Key(), err))
-	}
-
 	if err = record.StoreItem(p, context); err != nil {
 		return contract.Error(fmt.Sprintf("审计业务%s存储失败，详细信息：%s", p.Key(), err))
 	}
