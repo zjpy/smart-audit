@@ -753,7 +753,7 @@
 1. 通过如下命令新增一个审计事件：
 
    ```shell
-   ./xchain-cli wasm invoke audit2 -a '{"a":"0", "b":"0", "c":"0", "d":"1589532423", "e":"Time", "f":"2020-05-29T13:04:05.000Z", "g":"Location", "h":"39.901 116.299", "i":"FaceRecognize", "j":"/9j/4SMF...", "k":"ObjectRecognize", "l":"iVBORw0..."}' --method addEvent -m --output addEvent.out
+   ./xchain-cli wasm invoke audit2 -a '{"a":"0", "b":"0", "c":"1589532423", "d":"Time", "e":"2020-05-29T13:04:05.000Z", "f":"Location", "g":"39.901 116.299", "h":"FaceRecognize", "i":"/9j/4SMF...", "j":"ObjectRecognize", "k":"iVBORw0..."}' --method addEvent -m --output addEvent.out
    ```
 
    如果注册成功会返回如下响应消息：
@@ -769,7 +769,7 @@
 2. 添加步骤2中的返回fee值后重复步骤2中的命令：
 
    ```shell
-   ./xchain-cli wasm invoke audit2 -a '{"a":"0", "b":"0", "c":"0", "d":"1589532423", "e":"Time", "f":"2020-05-29T11:04:05.000Z", "g":"Location", "h":"39.901 116.299", "i":"FaceRecognize", "j":"/9j/4SMF...", "k":"ObjectRecognize", "l":"iVBORw0..."}' --method addEvent -m --output addEvent.out --fee 565194
+   ./xchain-cli wasm invoke audit2 -a '{"a":"0", "b":"0", "c":"1589532423", "d":"Time", "e":"2020-05-29T13:04:05.000Z", "f":"Location", "g":"39.901 116.299", "h":"FaceRecognize", "i":"/9j/4SMF...", "j":"ObjectRecognize", "k":"iVBORw0..."}' --method addEvent -m --output addEvent.out --fee 565194
    ```
 
    若生成成功则会在相同目录下生成名为`addEvent.out`的文件
@@ -806,7 +806,7 @@
 6. 通过queryEvents接口查询指定当事人在某个项目及规则下的所有事件
 
    ```shell
-   ./xchain-cli wasm invoke audit -a '{"0":"0", "1":"0", "2":"0"}' --method queryEvents -m
+   ./xchain-cli wasm invoke audit -a '{"0":"0", "1":"0"}' --method queryEvents -m
    ```
 
    可以看到如下响应结果：

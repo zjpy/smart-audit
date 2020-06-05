@@ -271,7 +271,7 @@ Chaincode invoke successful. result: status:200 payload:"{\"Name\":\"POS Audit\"
 注意此处的时间验证因为是根据当前时间验证需要将Time后的时间切到现在的日期
 
  ```shell
-docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["addEvent", "0", "0", "0", "1589532423", "Time", "2020-06-01T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]}'
+docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["addEvent", "0", "0", "1589532423", "Time", "2020-06-01T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]}'
  ```
 
 如果新增成功则会返回如下响应消息：
@@ -283,7 +283,7 @@ Chaincode invoke successful. result: status:200 payload:"OK"
 2.通过如下命令可以查询所有满足条件的审计事件：
 
 ```
-docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["queryEvents", "0", "0", "0"]}'
+docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["queryEvents", "0", "0"]}'
 ```
 
 如果查询成功则会返回如下响应消息：
@@ -318,7 +318,7 @@ docker exec cli peer chaincode instantiate -n audit -v 0 -c '{"Args":["init","ma
 docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerAuditee", "ZhanSan"]}'
 docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerRules", "AND", "Time", "(>= 9) AND (<= 18)", "Location", "IN(39.9 116.3 1000)", "FaceRecognize", "", "ObjectRecognize", ""]}'
 docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["registerProject", "POS Audit", "This is location","0", "0"]}'
-docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["addEvent", "0", "0", "0", "1589532423", "Time", "2020-05-26T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]}'
+docker exec cli peer chaincode invoke -n audit -C myc -c '{"Args": ["addEvent", "0", "0", "1589532423", "Time", "2020-05-26T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]}'
 ```
 
 ## 参考链接
