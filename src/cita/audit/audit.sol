@@ -12,12 +12,16 @@ contract Audit is Rules {
     /// @param time 时间服务合约地址.
     /// @param location 定位服务合约地址.
     constructor(
+        string[] names,
         address face,
         address identify,
         address time,
         address location
     ) Rules (face, identify, time, location) {
-
+        numMaintainers = uint32(names.length);
+        for (uint i = 0; i < numMaintainers; i++) {
+            maintainers[uint32(i)] = names[i];
+        }
     }
 
     /// @dev 注册一个验证人的事件.
@@ -28,16 +32,19 @@ contract Audit is Rules {
     /// @param ProjectID Project ID.
     event registerProjectEvent(uint32 ProjectID);
 
-    // auditee 计数器.
+    // 审计当事人计数器.
     uint32 numAuditees;
-    // 用于存储所有 auditees.
+    // 用于存储所有审计当事人.
     mapping (uint32 => string) auditees;
 
-    // 用于存储所有审计维护者
-    uint32[] maintainers;
+    // 合约运维人员计数器
+    uint32 numMaintainers;
+    // 用于存储所有合约运维人员
+    mapping (uint32 => string) maintainers; 
 
     // 用于定义单个项目.
     struct Project {
+        string name;
         string detail;
         uint32 auditeeID;
         uint32 relationID;
@@ -71,7 +78,7 @@ contract Audit is Rules {
     /// @param detail 项目信息.
     /// @param auditeeID auditee ID.
     /// @param relationID 相关规则 ID.
-    function registerProject(string detail, uint32 auditeeID, uint32 relationID) public {
+    function registerProject(string name, string detail, uint32 auditeeID, uint32 relationID) public {
         string storage auditee = auditees[auditeeID];
  //       require(auditee, "auditee 不存在");
 
@@ -79,7 +86,7 @@ contract Audit is Rules {
  //       require(relation, "relation 不存在");
 
         numProjects++;
-        projects[numProjects] = Project(detail, auditeeID, relationID);
+        projects[numProjects] = Project(name, detail, auditeeID, relationID);
 
         emit registerProjectEvent(numProjects);
     }
@@ -117,8 +124,12 @@ contract Audit is Rules {
 
     /// @dev 获取一个维护者列表.
     /// @return uint32[] 维护者列表.
-    function getMaintainers() public view returns(uint32[]) {
-        return maintainers;
+    function getMaintainers() public view returns(string[] memory) {
+        string[] memory rtn = new string[](numMaintainers);
+        for (uint32 i = 0; i < numMaintainers; i++) {
+            rtn[i] = maintainers[i];
+        }
+        return rtn;
     }
 
     /// @dev 获取一个审计事件.
