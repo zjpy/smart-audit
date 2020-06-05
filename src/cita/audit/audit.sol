@@ -7,6 +7,7 @@ import "./rules.sol";
 contract Audit is Rules {
 
     /// @dev 规则合约的构造方法，这里实现Rules.
+    /// @param names 维护人列表.
     /// @param face 人脸识别服务合约地址.
     /// @param identify 物体识别服务合约地址.
     /// @param time 时间服务合约地址.
