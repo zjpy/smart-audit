@@ -43,10 +43,10 @@ func GetAuditeeMain(args []string, context contract.Context) *contract.Response 
 
 	auditee := orgnization.Auditee{
 		Member: &orgnization.Member{ID: uint32(auditeeID)}}
-	ruleBuf, err := context.GetState(auditee.Key())
+	auditeeBuf, err := context.GetState(auditee.Key())
 	if err != nil {
 		return contract.Error(fmt.Sprintf("获取审计当事人信息出错，详细信息：%s", err.Error()))
 	}
 
-	return &contract.Response{Payload: ruleBuf}
+	return &contract.Response{Payload: auditeeBuf}
 }

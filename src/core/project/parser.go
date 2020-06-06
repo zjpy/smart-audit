@@ -29,6 +29,9 @@ func FromStrings(args []string, context contract.Context) (*Project, error) {
 			return nil, errors.New(fmt.Sprintf("解析审计当事人ID出错，详细信息：%s", err.Error()))
 		}
 		auditeeKey, err := getAuditeeKeyFromID(uint32(auditeeID), context)
+		if err != nil {
+			return nil, errors.New("审计当事人ID不存在")
+		}
 
 		ruleID, err := strconv.ParseUint(args[i+1], 10, 32)
 		if err != nil {
@@ -36,6 +39,9 @@ func FromStrings(args []string, context contract.Context) (*Project, error) {
 		}
 		rule := rules.ValidationRelationship{ID: uint32(ruleID)}
 		ruleBytes, err := context.GetState(rule.Key())
+		if err != nil {
+			return nil, errors.New("规则ID不存在")
+		}
 
 		auditRulesMap[auditeeKey] = string(ruleBytes)
 	}
@@ -66,17 +72,18 @@ func RegistrationFromString(args []string,
 	// 获取项目ID
 	projectID, err := strconv.ParseUint(args[1], 10, 32)
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析审计事件对应项目ID出错，详细信息：%s", err.Error()))
+		return nil, errors.New(fmt.Sprintf(
+			"解析审计事件对应项目ID出错，详细信息：%s", err.Error()))
 	}
 
-	// 获取规则ID
-	ruleID, err := getRelationID(uint32(auditeeID), uint32(projectID), context)
-	if err != nil {
-		return nil, errors.New(fmt.Sprintf("解析审计事件对应规则ID出错，详细信息：%s", err.Error()))
+	// 获取审计当事人、项目及审计规则信息
+	if err := setEventRelatedInformation(
+		registration, uint32(auditeeID), uint32(projectID), context); err != nil {
+		return nil, err
 	}
 
 	// 获取审计当事人ID、项目ID、规则ID构建审计事件ID
-	eventID := GenerateEventID(uint32(auditeeID), uint32(projectID), ruleID)
+	eventID := GenerateEventID(uint32(auditeeID), uint32(projectID), registration.Rule.ID)
 	registration.ID = eventID
 
 	// 获取时间戳
@@ -85,14 +92,6 @@ func RegistrationFromString(args []string,
 		return nil, errors.New(fmt.Sprintf("解析审计事件对应当事人ID出错，详细信息：%s", err.Error()))
 	}
 	registration.Timestamp = timeStamp
-
-	// 先只构建只有Key信息的审计当事人、项目、规则，如果需要补全则需调用合约根据ID查询
-	registration.Auditee = orgnization.Auditee{
-		Member: &orgnization.Member{ID: uint32(auditeeID)}}
-	registration.Project = Project{ID: uint32(projectID)}
-	registration.Rule = rules.ValidationRelationship{
-		Rules: make(map[rules.RuleType]contract.ServiceRuleID, 0),
-		ID:    uint32(ruleID)}
 
 	// 构建用于规则验证的参数
 	registration.Params = make([]string, 0)
@@ -107,6 +106,72 @@ func RegistrationFromString(args []string,
 	}
 	registration.Index = index
 	return registration, nil
+}
+
+// 获取审计当事人、项目及审计规则信息
+func setEventRelatedInformation(registration *Registration, auditeeID uint32,
+	projectID uint32, context contract.Context) error {
+	// 根据审计当事人ID获取审计当事人信息
+	auditee, err := getAuditee(auditeeID, context)
+	if err != nil {
+		return err
+	}
+	auditeeBuf, err := auditee.Value()
+	if err != nil {
+		return errors.New(fmt.Sprintf("获取审计当事人value出错，详细信息：%s", err.Error()))
+	}
+
+	// 根据项目ID获取项目信息
+	pj, err := getProject(projectID, context)
+	if err != nil {
+		return err
+	}
+
+	// 获取规则信息
+	if pj.AuditeeRulesMap == nil {
+		return errors.New("该项目无审计信息")
+	}
+	ruleContent, ok := pj.AuditeeRulesMap[string(auditeeBuf)]
+	if !ok {
+		return errors.New("未找到规则")
+	}
+	relation := &rules.ValidationRelationship{}
+	if err := json.Unmarshal([]byte(ruleContent), relation); err != nil {
+		return err
+	}
+
+	// 将审计当事人、项目、规则信息信息记录到审计事件中
+	registration.Auditee = *auditee
+	registration.Project = *pj
+	registration.Rule = *relation
+	return nil
+}
+
+// 根据审计当事人ID获取审计当事人信息
+func getAuditee(auditeeID uint32, context contract.Context) (*orgnization.Auditee, error) {
+	auditee := orgnization.Auditee{Member: &orgnization.Member{ID: auditeeID}}
+	auditeeBuf, err := context.GetState(auditee.Key())
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("获取审计当事人信息出错，详细信息：%s", err.Error()))
+	}
+	if err := json.Unmarshal(auditeeBuf, &auditee); err != nil {
+		return nil, errors.New(fmt.Sprintf("获取审计当事人信息后解析出错，详细信息：%s", err.Error()))
+
+	}
+	return &auditee, nil
+}
+
+// 根据项目ID获取项目信息
+func getProject(projectID uint32, context contract.Context) (*Project, error) {
+	pj := Project{ID: projectID}
+	projectBuf, err := context.GetState(pj.Key())
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("获取项目信息出错，详细信息：%s", err.Error()))
+	}
+	if err := json.Unmarshal(projectBuf, &pj); err != nil {
+		return nil, errors.New(fmt.Sprintf("获取项目信息后解析出错，详细信息：%s", err.Error()))
+	}
+	return &pj, nil
 }
 
 // 根据传入的参数获取审计事件ID

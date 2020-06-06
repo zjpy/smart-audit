@@ -43,9 +43,9 @@ func GetProjectMain(args []string, context contract.Context) *contract.Response 
 	}
 
 	pj := project.Project{ID: uint32(projectID)}
-	ruleBuf, err := context.GetState(pj.Key())
+	projectBuf, err := context.GetState(pj.Key())
 	if err != nil {
 		return contract.Error(fmt.Sprintf("获取项目信息出错，详细信息：%s", err.Error()))
 	}
-	return &contract.Response{Payload: ruleBuf}
+	return &contract.Response{Payload: projectBuf}
 }

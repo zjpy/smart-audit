@@ -39,7 +39,7 @@ func AddEventMain(args []string, context contract.Context) *contract.Response {
 
 // 根据审计当事人ID、项目ID以及规则ID，获取所有审计当事人的审计事件
 func QueryEventsMain(args []string, context contract.Context) *contract.Response {
-	if len(args) < 3 {
+	if len(args) < 2 {
 		return contract.Error("查询失败，需要提查询供审计事件对应的当事人ID、项目ID以及规则ID")
 	}
 
