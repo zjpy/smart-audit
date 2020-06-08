@@ -56,7 +56,7 @@ contract Audit is Rules {
     mapping (uint32 => Project) projects;
 
     // 用于存储所有的审计事件.
-    mapping (uint32 =>  mapping (uint32 => string[])) events;
+    mapping (uint32 =>  mapping (uint32 => string[][])) events;
 
     /// @dev 注册一个 auditee.
     /// @param name auditee 名字.
@@ -74,10 +74,7 @@ contract Audit is Rules {
     /// @param relationID 相关规则 ID.
     function registerProject(string name, string detail, uint32 auditeeID, uint32 relationID) public {
         string storage auditee = auditees[auditeeID];
- //       require(auditee, "auditee 不存在");
-
         ValidationRelationship storage relation = relationMap[relationID];
- //       require(relation, "relation 不存在");
 
         uint32 projectID = numProjects;
         projects[projectID] = Project(name, detail, auditeeID, relationID);
@@ -92,14 +89,10 @@ contract Audit is Rules {
     /// @param value 具体验证内容表达式.
     function addEvent(uint32 auditeeID, uint32 projectID, string[] value) public {
         string storage auditee = auditees[auditeeID];
- //       require(auditee, "auditee 不存在");
-
         Project storage project = projects[projectID];
- //       require(project, "项目不存在");
 
         validateRules(project.relationID, value);
-
-        events[auditeeID][projectID] = value;
+        events[auditeeID][projectID].push(value);
     }
 
     /// @dev 获取一个 auditee.
@@ -130,7 +123,7 @@ contract Audit is Rules {
     /// @param auditeeID 被审计人ID.
     /// @param projectID 项目ID.
     /// @return string[] 审计内容.
-    function queryEvents(uint32 auditeeID, uint32 projectID) public view returns(string[]) {
+    function queryEvents(uint32 auditeeID, uint32 projectID) public view returns(string[][]) {
        return events[auditeeID][projectID];
     }
 }
