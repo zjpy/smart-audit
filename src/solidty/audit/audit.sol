@@ -61,10 +61,11 @@ contract Audit is Rules {
     /// @dev 注册一个 auditee.
     /// @param name auditee 名字.
     function registerAuditee(string name) public {
+        uint32 auditeeID = numAuditees;
+        auditees[auditeeID] = name;
         numAuditees++;
-        auditees[numAuditees] = name;
 
-        emit registerAuditeeEvent(numAuditees);
+        emit registerAuditeeEvent(auditeeID);
     }
 
     /// @dev 注册一个项目.
@@ -78,10 +79,11 @@ contract Audit is Rules {
         ValidationRelationship storage relation = relationMap[relationID];
  //       require(relation, "relation 不存在");
 
+        uint32 projectID = numProjects;
+        projects[projectID] = Project(name, detail, auditeeID, relationID);
         numProjects++;
-        projects[numProjects] = Project(name, detail, auditeeID, relationID);
 
-        emit registerProjectEvent(numProjects);
+        emit registerProjectEvent(projectID);
     }
 
     /// @dev 添加一个审计事件.
