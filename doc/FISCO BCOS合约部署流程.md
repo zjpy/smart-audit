@@ -459,7 +459,7 @@
 1. 通过如下命令执行审计事件新增操作：
 
    ```
-   callByCNS Audit:1.0 addEvent 0 0 0 ["Time", "2020-06-01T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]
+   callByCNS Audit:1.0 addEvent 0 0 ["Time", "2020-06-01T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]
    ```
 
    如果新增成功，则每一个预言机服务会打印相应的事件
@@ -467,10 +467,20 @@
 2. 通过如下命令可查询到指定当事人在某个项目及规则下的所有事件：
 
    ```
-   callByCNS Audit:1.0 queryEvents 0 0 0 
+   callByCNS Audit:1.0 queryEvents 0 0
    ```
 
-   
+   若调用成功会返回如下响应信息：
+
+   ```
+   transaction hash: 0xda0ee52930ba0004ccbe1177b35ff52a8d0d79de496b656df70e76b0c7672cbb
+   ---------------------------------------------------------------------------------------------
+   Output
+   function: queryEvents()
+   return type: (string[][])
+   return value: ([["Time", "2020-06-01T15:04:05.000Z", "Location", "39.901 116.299", "FaceRecognize", "/9j/4SMF...", "ObjectRecognize", "iVBORw0..."]])
+   ---------------------------------------------------------------------------------------------
+   ```
 
 
 ## 参考链接
